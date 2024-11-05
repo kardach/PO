@@ -20,20 +20,29 @@ float x_offset = (window_heigth < window_width) ? (window_width - board_size * t
 float y_offset = (window_heigth < window_width) ? 0 : (window_width - board_size * tile_size) / 2;
 
 Font font;
-
+Text text;
+RectangleShape tile;
+Color color;
 
 class Tile {
 protected:
-    RectangleShape tile;
     float size;
     float x;
     float y;
+    int rgb;
 public:
     Tile() {
     }
     virtual ~Tile() {
     }
     virtual void draw() {
+        color.r = rgb >> 16 & 0xFF;
+        color.g = rgb >> 8 & 0xFF;
+        color.b = rgb & 0xFF;
+
+        tile.setSize(Vector2f(tile_size, tile_size));
+        tile.setPosition(x * tile_size + x_offset, y * tile_size + y_offset);
+        tile.setFillColor(color);
         window.draw(tile);
     }
 };
@@ -43,44 +52,36 @@ public:
         this->size = size;
         this->x = x;
         this->y = y;
-        this->tile = RectangleShape(Vector2f(size, size));
-
-        tile.setPosition(x * tile_size + x_offset, y * tile_size + y_offset);
-        tile.setFillColor(Color(222, 184, 135));
+        this->rgb = 0xDEB887;
     }
     ~CornerTile() {
     }
 };
 class BorderTile : public Tile {
 private:
-    Text text;
+    char sign;
 public:
     BorderTile(float size, float x, float y, char sign) {
         this->size = size;
         this->x = x;
         this->y = y;
-        this->text = Text();
-        this->tile = RectangleShape(Vector2f(size, size));
-
-        tile.setPosition(x * tile_size + x_offset, y * tile_size + y_offset);
-        tile.setFillColor(Color(222, 184, 135));
-
-        text.setFont(font);
-        text.setCharacterSize(24);
-        text.setFillColor(Color(128, 0, 0));
-        text.setString("fj");
-        text.setPosition(x * tile_size + x_offset - 2, y * tile_size + y_offset - 4);
-
-        cout << text.getLocalBounds().top << " " << text.getLocalBounds().left << endl;
-        cout << text.getLocalBounds().height << " " << text.getLocalBounds().width << endl;
-        cout << text.getGlobalBounds().top << " " << text.getGlobalBounds().left << endl;
-        cout << text.getGlobalBounds().height << " " << text.getGlobalBounds().width << endl;
-        cout << endl;
+        this->rgb = 0xDEB887;
+        this->sign = sign;
     }
     ~BorderTile() {
     }
     void draw() override{
+        color.r = rgb >> 16 & 0xFF;
+        color.g = rgb >> 8 & 0xFF;
+        color.b = rgb & 0xFF;
+
+        tile.setSize(Vector2f(tile_size, tile_size));
+        tile.setPosition(x * tile_size + x_offset, y * tile_size + y_offset);
+        tile.setFillColor(color);
         window.draw(tile);
+
+        text.setString(sign);
+        text.setPosition(x * tile_size + x_offset + (tile_size - text.getLocalBounds().width) / 2, y * tile_size + y_offset + (tile_size - text.getLocalBounds().height) / 2);
         window.draw(text);
     }
 };
@@ -88,19 +89,24 @@ class MainTile: public Tile {
 private:
     int piece_placed = 0;
 public:
-    MainTile(float size, float x, float y, bool color) {
+    MainTile(float size, float x, float y, bool team) {
         this->size = size;
         this->x = x;
         this->y = y;
-        this->tile = RectangleShape(Vector2f(size, size));
-
-        tile.setPosition(x * tile_size + x_offset, y * tile_size + y_offset);
-        tile.setFillColor(color ? Color(255, 228, 196) : Color(139, 69, 19));
+        this->rgb = team ? 0xFFE4C4 : 0x8B4513;
     }
     ~MainTile() {
     }
     void draw() override {
+        color.r = rgb >> 16 & 0xFF;
+        color.g = rgb >> 8 & 0xFF;
+        color.b = rgb & 0xFF;
+
+        tile.setSize(Vector2f(tile_size, tile_size));
+        tile.setPosition(x * tile_size + x_offset, y * tile_size + y_offset);
+        tile.setFillColor(color);
         window.draw(tile);
+
         if (piece_placed) {
             CircleShape piece = CircleShape(tile_size / 2);
             piece.setFillColor(Color::White);
@@ -113,12 +119,17 @@ public:
     }
 };
 int main() {
-
+    color.r = color.g = color.b = 128;
     background.setPosition(0, 0);
-    background.setFillColor(Color(128, 128, 128));
+    background.setFillColor(color);
     
     font.loadFromFile("ariblk.ttf");
     
+    color.g = color.b = 0;
+    text.setFont(font);
+    text.setCharacterSize(24);
+    text.setFillColor(color);
+
     Tile*** TILES = new Tile ** [board_size];
     for (int i = 0; i < board_size; i++) {
         TILES[i] = new Tile*[board_size];
@@ -132,11 +143,11 @@ int main() {
             }
             //left and right board border
             else if (i != 0 && i != board_size - 1 && (j == 0 || j == board_size - 1)) {
-                TILES[i][j] = new BorderTile(tile_size, i, j, 'y');
+                TILES[i][j] = new BorderTile(tile_size, i, j, 'a' + i - 1);
             }
             //top and bottom board border
             else if ((i == 0 || i == board_size - 1) && j != 0 && j != board_size - 1) {
-                TILES[i][j] = new BorderTile(tile_size, i, j, '0');
+                TILES[i][j] = new BorderTile(tile_size, i, j, '0' + j - 1);
             }
             //corners
             else {
