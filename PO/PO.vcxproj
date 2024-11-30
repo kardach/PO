@@ -137,13 +137,15 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Kardach\libs\SFML-2.6.1\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Kardach\libs\SFML-2.6.1\lib;C:\Users\Kardach\libs\SFML-2.6.1\bin</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SFML_STATIC;sfml-graphics.lib;sfml-window.lib;sfml-system.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="globals.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="window.cpp" />
+    <ClCompile Include="piece.cpp" />
+    <ClCompile Include="tiles.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -152,7 +154,9 @@
     <Font Include="ariblk.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="window.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="piece.h" />
+    <ClInclude Include="tiles.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
