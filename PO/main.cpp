@@ -1,8 +1,7 @@
 #include <SFML/Graphics.hpp>
-#include <iostream>;
-#include "window.cpp"
+#include <iostream>
 
-using namespace sf;
+int main()
 using namespace std;
 
 RenderWindow window(VideoMode(800, 600), "Draughts", Style::Close | Style::Titlebar);
@@ -163,16 +162,6 @@ int main() {
             if (event.type == Event::Closed) {
                 window.close();
             }
-        }
-        window.clear();
-        window.draw(background);
-        for (int i = 0; i < board_size; i++) {
-            for (int j = 0; j < board_size; j++) {
-                TILES[i][j]->draw();
-            }
-        }
-        
-        window.display();
     }
 
     return 0;
