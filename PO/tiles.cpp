@@ -48,4 +48,19 @@ MainTile::~MainTile() {
 }
 void MainTile::draw() {
     Tile::draw();
+    if (piece != nullptr) {
+        piece->draw();
+    }
+}
+void MainTile::place_piece(Piece* piece) {
+    this->piece = piece;
+    this->piece->set_position((int)this->x, (int)this->y);
+}
+bool MainTile::has_piece() {
+    return this->piece != nullptr;
+}
+Piece* MainTile::remove_piece() {
+    Piece* temp = this->piece;
+    this->piece = nullptr;
+    return temp;
 }

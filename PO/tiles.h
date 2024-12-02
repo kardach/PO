@@ -14,16 +14,16 @@ protected:
     int rgb;
 public:
     Tile(float, float, float, int);
-    ~Tile();
+    virtual ~Tile();
     virtual void draw() = 0;
 };
-class CornerTile :public Tile {
+class CornerTile : virtual public Tile {
 public:
     CornerTile(float, float, float);
     ~CornerTile();
     void draw() override;
 };
-class BorderTile : public Tile {
+class BorderTile : virtual public Tile {
 private:
     char sign;
 public:
@@ -31,15 +31,16 @@ public:
     ~BorderTile();
     void draw() override;
 };
-class MainTile : public Tile {
+class MainTile : virtual public Tile {
 private:
     Piece* piece;
 public:
     MainTile(float, float, float, bool);
     ~MainTile();
     void draw() override;
+    void place_piece(Piece* piece);
+    bool has_piece();
+    Piece* remove_piece();
 };
-
-
 
 #endif

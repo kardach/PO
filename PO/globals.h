@@ -17,10 +17,12 @@ extern RectangleShape background;
 extern int board_size;
 
 extern float tile_size;
-extern int tile_count;
+//extern int tile_count;
 
 extern float x_offset;
 extern float y_offset;
+
+extern int piece_count;
 
 extern Font font;
 extern Text text;
