@@ -30,4 +30,6 @@ extern RectangleShape tile;
 extern CircleShape circ;
 extern Color color;
 
+typedef bool (*f_ptr)(Vector2i, Vector2i);
+
 #endif // !GLOBALS_H_

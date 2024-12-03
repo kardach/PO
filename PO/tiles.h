@@ -41,6 +41,7 @@ public:
     void place_piece(Piece* piece);
     bool has_piece();
     Piece* remove_piece();
+    f_ptr get_piece_moveset();
 };
 
 #endif

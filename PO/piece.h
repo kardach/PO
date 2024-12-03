@@ -13,14 +13,17 @@ private:
 	int y;
 	int rgb;
 public:
-	bool (*can_move_to)(Vector2i, Vector2i);
-	bool (*can_capture)(Vector2i, Vector2i);
+	//bool (*can_move_to)(Vector2i, Vector2i);
+	//bool (*can_capture)(Vector2i, Vector2i);
+	f_ptr can_move_to;
+	f_ptr can_capture;
 	Piece();
-	Piece(bool, bool(*can_move_to)(Vector2i, Vector2i), bool (*can_capture)(Vector2i, Vector2i));
+	//Piece(bool, bool(*can_move_to)(Vector2i, Vector2i), bool (*can_capture)(Vector2i, Vector2i));
+	Piece(bool, f_ptr, f_ptr);
 	~Piece();
 	void set_position(int, int);
 	void set_color(bool);
-	void draw();
+	void draw() const;
 };
 
 #endif

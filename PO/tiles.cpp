@@ -48,6 +48,7 @@ MainTile::~MainTile() {
 }
 void MainTile::draw() {
     Tile::draw();
+
     if (piece != nullptr) {
         piece->draw();
     }
@@ -63,4 +64,7 @@ Piece* MainTile::remove_piece() {
     Piece* temp = this->piece;
     this->piece = nullptr;
     return temp;
+}
+f_ptr MainTile::get_piece_moveset() {
+    return this->piece->can_move_to;
 }

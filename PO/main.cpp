@@ -8,7 +8,25 @@
 using namespace sf;
 using namespace std;
 
+class Move {
+public:
+    Vector2i from;
+    Vector2i to;
+    Move* next;
+    Move(Vector2i, Vector2i);
+    ~Move();
+};
+Move::Move(Vector2i from, Vector2i to) {
+    this->from = Vector2i(from);
+    this->to = Vector2i(to);
+    this->next = nullptr;
+    cout << "FROM: " << from.x << " " << from.y << endl;
+}
+Move::~Move() {
+}
+
 bool test(Vector2i from, Vector2i to) {
+    cout << "TEST CALLED" << endl;
     return true;
 }
 
@@ -47,21 +65,23 @@ int main() {
             }
             //left and right board border
             else if (i != 0 && i != board_size - 1 && (j == 0 || j == board_size - 1)) {
-                Tiles.push_back(make_shared<BorderTile>(tile_size, i, j, 'a' + i - 1));
+                Tiles.push_back(make_shared<BorderTile>(tile_size, (float)i, (float)j, 'a' + i - 1));
             }
             //top and bottom board border
             else if ((i == 0 || i == board_size - 1) && j != 0 && j != board_size - 1) {
-                Tiles.push_back(make_shared<BorderTile>(tile_size, i, j, '0' + j - 1));
+                Tiles.push_back(make_shared<BorderTile>(tile_size, (float)i, (float)j, '0' + j - 1));
             }
             //corners
             else {
-                Tiles.push_back(make_shared<CornerTile>(tile_size, i, j));
+                Tiles.push_back(make_shared<CornerTile>(tile_size, (float)i, j));
             }
         }
     }
     
-    vector<Vector2i> move;
-    
+    vector<Move> moves;
+    bool flag = false;
+    Vector2i temp = Vector2i();
+    f_ptr function_pointer = nullptr;
     //game
     while (window.isOpen()) {
         Event event;
@@ -72,31 +92,48 @@ int main() {
             else if (event.type == Event::MouseButtonReleased && event.mouseButton.button == Mouse::Left) {
                 Vector2f cords = Vector2f(Mouse::getPosition(window));
                 Vector2i board_cords = Vector2i((int)((cords.x - x_offset) / tile_size), (int)((cords.y - y_offset) / tile_size));
+                shared_ptr<MainTile> start_tile = nullptr;
+                cout << "CORDS: " << board_cords.x << " " << board_cords.y << endl;
                 //check if move is possible
-                if (cords.x > x_offset && cords.x < x_offset + tile_size * (board_size - 2) &&
-                    cords.y > y_offset && cords.y < y_offset + tile_size * (board_size - 2)) {
-                    shared_ptr<MainTile> temp = dynamic_pointer_cast<MainTile>(Tiles.at(board_cords.x * board_size + board_cords.y));
-                    if (temp != nullptr) {
-                        if (move.size() == 0 && temp->has_piece() || move.size() == 1 && !(temp->has_piece())) {
-                            move.push_back(Vector2i(board_cords.x, board_cords.y));
+                if (cords.x > x_offset + tile_size && cords.x < x_offset + tile_size * (board_size - 1) &&
+                    cords.y > y_offset + tile_size && cords.y < y_offset + tile_size * (board_size - 1)) {
+                    shared_ptr<MainTile> selected_tile = dynamic_pointer_cast<MainTile>(Tiles.at((size_t)board_cords.x * board_size + board_cords.y));
+                    if (selected_tile != nullptr) {
+                        if (moves.size() == 0 && selected_tile->has_piece() && flag == false) {
+                            //cout << "FIRST: " << board_cords.x << " " << board_cords.y << endl;
+                            flag = true;
+                            temp = Vector2i(board_cords);
+                            function_pointer = selected_tile->get_piece_moveset();
+                        }
+                        else if (moves.size() == 0 && flag == true) {
+                            //cout << "SECOND: " << board_cords.x << " " << board_cords.y << endl;
+                            if (function_pointer != nullptr && function_pointer(temp, board_cords)) {
+                                moves.push_back(Move(temp, board_cords));
+                                flag = false;
+                                selected_tile = nullptr;
+                            }
                         }
                     }                    
                 }
                 //move piece
-                if (move.size() == 2) {
-                    Vector2i start = move.at(0);
-                    Vector2i end = move.at(1);
-                    Piece* piece = dynamic_pointer_cast<MainTile>(Tiles.at(start.x * board_size + start.y))->remove_piece();
-                    dynamic_pointer_cast<MainTile>(Tiles.at(end.x * board_size + end.y))->place_piece(piece);
-                    move.clear();
+                if (moves.size() == 1) {
+                    Vector2i start = moves.at(0).from;
+                    Vector2i end = moves.at(0).to;
+                    //cout << "START: " << start.x << " " << start.y << endl;
+                    //cout << "END: " << end.x << " " << end.y << endl;
+                    Piece* piece = dynamic_pointer_cast<MainTile>(Tiles.at((size_t)start.x * board_size + start.y))->remove_piece();
+                    dynamic_pointer_cast<MainTile>(Tiles.at((size_t)end.x * board_size + end.y))->place_piece(piece);
+                    moves.clear();
+                    temp = Vector2i();
+                    function_pointer = nullptr;
                 }
             }
         }
         //drawing
         window.clear();
         window.draw(background);
-        for (int i = 0; i < board_size; i++) {
-            for (int j = 0; j < board_size; j++) {
+        for (size_t i = 0; i < board_size; i++) {
+            for (size_t j = 0; j < board_size; j++) {
                 Tiles.at(i * board_size + j)->draw();
             }
         }

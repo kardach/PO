@@ -11,7 +11,13 @@ Piece::Piece() {
 	this->y = 0;
 
 }
-Piece::Piece(bool type, bool (*can_move_to)(Vector2i, Vector2i), bool (*can_capture)(Vector2i, Vector2i)) {
+/*Piece::Piece(bool type, bool (*can_move_to)(Vector2i, Vector2i), bool (*can_capture)(Vector2i, Vector2i)) {
+	this->type = type;
+	this->can_move_to = can_move_to;
+	this->can_capture = can_capture;
+	set_position(0, 0);
+}*/
+Piece::Piece(bool type, f_ptr can_move_to, f_ptr can_capture) {
 	this->type = type;
 	this->can_move_to = can_move_to;
 	this->can_capture = can_capture;
@@ -26,7 +32,7 @@ void Piece::set_position(int x, int y) {
 void Piece::set_color(bool team) {
 	this->rgb = team ? 0xFFFFFF : 0x000000;
 }
-void Piece::draw() {
+void Piece::draw() const {
 	color.r = rgb >> 16 & 0xFF;
 	color.g = rgb >> 8 & 0xFF;
 	color.b = rgb & 0xFF;
