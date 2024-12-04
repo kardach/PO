@@ -17,7 +17,7 @@ Piece::Piece() {
 	this->can_capture = can_capture;
 	set_position(0, 0);
 }*/
-Piece::Piece(bool type, f_ptr can_move_to, f_ptr can_capture) {
+Piece::Piece(bool type, b_fptr_2V can_move_to, b_fptr_2V can_capture) {
 	this->type = type;
 	this->can_move_to = can_move_to;
 	this->can_capture = can_capture;

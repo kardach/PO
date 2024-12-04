@@ -29,7 +29,9 @@ extern Text text;
 extern RectangleShape tile;
 extern CircleShape circ;
 extern Color color;
+extern RectangleShape button;
 
-typedef bool (*f_ptr)(Vector2i, Vector2i);
+typedef bool (*b_fptr_2V)(Vector2i, Vector2i);
+typedef int (*i_fptr_i)(int);
 
 #endif // !GLOBALS_H_

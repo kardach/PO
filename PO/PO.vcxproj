@@ -142,9 +142,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="button.cpp" />
+    <ClCompile Include="checkbox.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="move.cpp" />
     <ClCompile Include="piece.cpp" />
+    <ClCompile Include="radio.cpp" />
     <ClCompile Include="tiles.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,8 +158,12 @@
     <Font Include="ariblk.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="button.h" />
+    <ClInclude Include="checkbox.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="move.h" />
     <ClInclude Include="piece.h" />
+    <ClInclude Include="radio.h" />
     <ClInclude Include="tiles.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -65,6 +65,6 @@ Piece* MainTile::remove_piece() {
     this->piece = nullptr;
     return temp;
 }
-f_ptr MainTile::get_piece_moveset() {
+b_fptr_2V MainTile::get_piece_moveset() {
     return this->piece->can_move_to;
 }
