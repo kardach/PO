@@ -3,23 +3,18 @@
 #ifndef BUTTON_H_
 #define BUTTON_H_
 
-#include <SFML/Graphics.hpp>
-#include "globals.h"
-
-class Button {
+class Button : public RoundedRectangle {
 private:
-    float heigth;
-    float width;
-    float x;
-    float y;
-    int rgb;
+    std::string m_text;
 public:
-    i_fptr_i on_click;
     Button();
-    Button(float, float, float, float, int, i_fptr_i);
+
+    Button(const sf::Vector2f&, const float, const std::string);
+
     ~Button();
-    bool contains(Vector2f);
-    void draw();
+
+    int onClick(int);
+
 };
 
-#endif
+#endif // BUTTON_H_

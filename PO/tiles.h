@@ -1,47 +1,49 @@
 #pragma once
+
 #ifndef TILES_H
 #define TILES_H
 
-#include <SFML/Graphics.hpp>
-#include "globals.h"
-#include "piece.h"
+#include "Piece.h"
 
-class Tile {
+class Tile : public sf::Transformable, public sf::Drawable {
 protected:
-    float size;
-    float x;
-    float y;
-    int rgb;
+    sf::RectangleShape m_rectangle;
 public:
-    Tile(float, float, float, int);
+    Tile(const float, const sf::Vector2f&, const sf::Color&);
+
     virtual ~Tile();
-    virtual void draw() = 0;
-};
-class CornerTile : virtual public Tile {
-public:
-    CornerTile(float, float, float);
-    ~CornerTile();
-    void draw() override;
-};
-class BorderTile : virtual public Tile {
-private:
-    char sign;
-public:
-    BorderTile(float, float, float, char);
-    ~BorderTile();
-    void draw() override;
-};
-class MainTile : virtual public Tile {
-private:
-    Piece* piece;
-public:
-    MainTile(float, float, float, bool);
-    ~MainTile();
-    void draw() override;
-    void place_piece(Piece* piece);
-    bool has_piece();
-    Piece* remove_piece();
-    b_fptr_2V get_piece_moveset();
+
+    virtual void draw(sf::RenderTarget&, sf::RenderStates) const = 0;
 };
 
-#endif
+class CornerTile : public Tile {
+public:
+    CornerTile(const float, const sf::Vector2f&);
+
+    ~CornerTile();
+
+    virtual void draw(sf::RenderTarget&, sf::RenderStates) const override;
+};
+
+class BorderTile : public Tile {
+private:
+    sf::Text m_sign;
+public:
+    BorderTile(const float, const sf::Vector2f&, const char);
+    ~BorderTile();
+    virtual void draw(sf::RenderTarget&, sf::RenderStates) const override;
+};
+
+class MainTile : public Tile {
+private:
+    //Piece* m_piece;
+public:
+    MainTile(const float, const sf::Vector2f&, const bool);
+    ~MainTile();
+    virtual void draw(sf::RenderTarget&, sf::RenderStates) const override;
+    //void placePiece(const Piece&);
+    //const bool hasPiece();
+    //const Piece* removePiece();
+};
+
+#endif // TILES_H_

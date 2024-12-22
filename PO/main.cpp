@@ -1,47 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "globals.h"
-#include "piece.h"
-#include "tiles.h"
-#include "move.h"
-#include "button.h"
-#include "radio.h"
-#include "checkbox.h"
-
-using namespace sf;
-using namespace std;
-
-
-
-bool test(Vector2i from, Vector2i to) {
-    cout << "TEST CALLED" << endl;
-    return true;
-}
-int start_game(int flag) {
-    return 1;
-}
-int set_board_size(int flag) {
-    cout << "BOARD" << endl;
-    if (flag == 0) {
-        cout << "FIRST" << endl;
-        return 10;
-    }
-    else if (flag == 1) {
-        cout << "SECOND" << endl;
-        return 12;
-    }
-    else if (flag == 2) {
-        cout << "THIRD" << endl;
-        return 14;
-    }
-    else {
-        cout << "ERROR" << endl;
-        return 0;
-    }
-}
-
-vector<shared_ptr<Tile>> create_board(Piece** Pieces) {
+#include "RoundedRectangle.h"
+#include "Settings.h"
+#include "Button.h"
+#include "Board.h"
+/*std::vector<std::shared_ptr<Tile>> create_board(Piece** Pieces) {
     int rows = (board_size * board_size - piece_count * 2) / board_size / 2 - 1;
     int counter = 0;
     vector<shared_ptr<Tile>> Tiles;
@@ -71,21 +35,53 @@ vector<shared_ptr<Tile>> create_board(Piece** Pieces) {
         }
     }
     return Tiles;
-}
+}*/
 
 int main() {
-    color.r = color.g = color.b = 128;
-    background.setPosition(0, 0);
-    background.setFillColor(color);
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Draughts", sf::Style::Close | sf::Style::Titlebar);
 
+    Settings settings(window.getSize());
+    settings.setBoardSize(10);
+    settings.setPieceCount(24);
+
+    sf::RectangleShape background(sf::Vector2f(window.getSize()));
+    background.setPosition(0.f, 0.f);
+    background.setFillColor(sf::Color(128, 128, 128));
+
+    sf::Font font;
     font.loadFromFile("ariblk.ttf");
-
-    color.g = color.b = 0;
+    
+    sf::Text text;
     text.setFont(font);
     text.setCharacterSize(24);
-    text.setFillColor(color);
+    text.setFillColor(sf::Color(128, 0, 0));
 
-    Piece** Pieces = new Piece * [piece_count];
+    Board board(window.getSize(), settings);
+
+    bool game_started = false;
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed || event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape) {
+                window.close();
+            }
+            else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+                if (!game_started) {
+                    sf::Vector2f cords = sf::Vector2f(sf::Mouse::getPosition(window));
+                }
+                else {
+
+                }
+            }
+        }
+        window.clear();
+        window.draw(background);
+        window.draw(board);
+        window.display();
+    }
+
+    /*Piece** Pieces = new Piece * [piece_count];
     for (int i = 0; i < piece_count; i++) {
         Pieces[i] = new Piece(true, test, test);
     }
@@ -101,6 +97,11 @@ int main() {
     Button start(100.0f, 100.0f, 0.0f, 0.0f, 0xFF0000, start_game);
     Radio board_radio(100.0f, 300.0f, 0.0f, 100.0f, 0x00FF00, 3, set_board_size);
     Checkbox rule(100.0f, 100.0f, 0.0f, 200.0f, 0x0000FF);
+
+    X x;
+    x.setSize(Vector2f(50.0f, 50.0f));
+    x.setPosition(Vector2f(0.0f, 300.0f));
+    x.setFillColor(Color::Yellow);
     //game
     while (window.isOpen()) {
         Event event;
@@ -186,9 +187,10 @@ int main() {
             start.draw();
             board_radio.draw();
             rule.draw();
+            window.draw(x);
         }
         window.display();
-    }
+    }*/
 
     return 0;
 }

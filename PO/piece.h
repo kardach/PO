@@ -3,27 +3,24 @@
 #ifndef PIECE_H_
 #define PIECE_H_
 
-#include <SFML/Graphics.hpp>
-#include "globals.h"
+#include "Board.h"
 
-class Piece {
-private:
-	bool type;
-	int x;
-	int y;
-	int rgb;
+
+class Piece : public sf::Transformable, public sf::Drawable {
 public:
-	//bool (*can_move_to)(Vector2i, Vector2i);
-	//bool (*can_capture)(Vector2i, Vector2i);
-	b_fptr_2V can_move_to;
-	b_fptr_2V can_capture;
-	Piece();
-	//Piece(bool, bool(*can_move_to)(Vector2i, Vector2i), bool (*can_capture)(Vector2i, Vector2i));
-	Piece(bool, b_fptr_2V, b_fptr_2V);
-	~Piece();
-	void set_position(int, int);
-	void set_color(bool);
-	void draw() const;
+	enum Type : bool { Man, King };
+
+	enum Team : bool { Black, White };
+private:
+	Type m_type;
+
+	sf::CircleShape m_circle;
+public:
+	Piece(const float, const Type, const Team);
+
+	~Piece();;
+
+	void draw(sf::RenderTarget&, sf::RenderStates) const;
 };
 
-#endif
+#endif // PIECE_H_
