@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 
-#include "Board.h"
 #include "Piece.h"
 
 Piece::Piece(const float radius, const Type type, const Team team) {
@@ -14,6 +13,9 @@ Piece::Piece(const float radius, const Type type, const Team team) {
 Piece::~Piece() {
 }
 
+void Piece::setPosition(const sf::Vector2f& position) {
+	m_circle.setPosition(position);
+}
 
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();

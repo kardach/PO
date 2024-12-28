@@ -4,16 +4,56 @@
 #include "RoundedRectangle.h"
 #include "Button.h"
 
-Button::Button()
-    : RoundedRectangle(), m_text("") {
-}
-Button::Button(const sf::Vector2f& size, const float roundness, const std::string text)
-    : RoundedRectangle(size, roundness), m_text(text) {
+Button::Button() {
+	m_round_rect = RoundedRectangle();
+	m_round_rect.setRoundness(0.5f);
+
+	m_font = sf::Font();
+	m_font.loadFromFile("ariblk.ttf");
+	
+	m_text = sf::Text();
+	m_text.setFont(m_font);
+	m_text.setCharacterSize(24);
 }
 
 Button::~Button() {
 }
 
-int Button::onClick(int x) {
-    return 0;
+void Button::setSize(const sf::Vector2f& size) {
+	m_round_rect.setSize(size);
+	centerText();
+}
+
+void Button::setPosition(const sf::Vector2f& position) {
+	m_round_rect.setPosition(position);
+	centerText();
+}
+
+void Button::setFillColor(const sf::Color& color) {
+	m_round_rect.setFillColor(color);
+}
+
+void Button::setTextColor(const sf::Color& color) {
+	m_text.setFillColor(color);
+}
+
+void Button::setString(const std::string& text) {
+	m_text.setString(text);
+	centerText();
+}
+
+bool Button::contains(const sf::Vector2f& cords) {
+	return m_round_rect.getGlobalBounds().contains(cords);
+}
+
+void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	target.draw(m_round_rect, states);
+	target.draw(m_text, states);
+}
+
+void Button::centerText() {
+	sf::FloatRect text_rect = m_text.getLocalBounds();
+	m_text.setOrigin(text_rect.left + text_rect.width / 2.f, text_rect.top + text_rect.height / 2.f);
+	m_text.setPosition(sf::Vector2f(m_round_rect.getPosition().x + m_round_rect.getSize().x / 2.f,
+		m_round_rect.getPosition().y + m_round_rect.getSize().y / 2.f));
 }

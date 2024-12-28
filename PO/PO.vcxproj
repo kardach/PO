@@ -143,14 +143,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="BorderTile.cpp" />
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="checkbox.cpp" />
+    <ClCompile Include="CornerTile.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="move.cpp" />
+    <ClCompile Include="MainTile.cpp" />
+    <ClCompile Include="Option.cpp" />
     <ClCompile Include="Piece.cpp" />
+    <ClCompile Include="Radio.cpp" />
     <ClCompile Include="RoundedRectangle.cpp" />
     <ClCompile Include="Settings.cpp" />
-    <ClCompile Include="Tiles.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -160,13 +163,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BorderTile.h" />
     <ClInclude Include="Button.h" />
-    <ClInclude Include="checkbox.h" />
-    <ClInclude Include="move.h" />
+    <ClInclude Include="CornerTile.h" />
+    <ClInclude Include="MainTile.h" />
+    <ClInclude Include="Option.h" />
     <ClInclude Include="Piece.h" />
+    <ClInclude Include="Radio.h" />
     <ClInclude Include="RoundedRectangle.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="Tiles.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

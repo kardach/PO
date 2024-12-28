@@ -3,9 +3,6 @@
 #ifndef PIECE_H_
 #define PIECE_H_
 
-#include "Board.h"
-
-
 class Piece : public sf::Transformable, public sf::Drawable {
 public:
 	enum Type : bool { Man, King };
@@ -18,7 +15,9 @@ private:
 public:
 	Piece(const float, const Type, const Team);
 
-	~Piece();;
+	~Piece();
+
+	void setPosition(const sf::Vector2f&);
 
 	void draw(sf::RenderTarget&, sf::RenderStates) const;
 };

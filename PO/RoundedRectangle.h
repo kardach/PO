@@ -14,18 +14,18 @@ public:
     explicit RoundedRectangle(const sf::Vector2f&, const float);
 
     ~RoundedRectangle();
-
+    
     void setRoundness(const float);
 
     const float getRoundness() const;
 
-    void setSize(const sf::Vector2f& size);
+    void setSize(const sf::Vector2f&);
 
     const sf::Vector2f& getSize() const;
 
     virtual std::size_t getPointCount() const;
 
-    virtual sf::Vector2f getPoint(std::size_t index) const;
+    virtual sf::Vector2f getPoint(std::size_t) const;
 };
 
 #endif // ROUNDEDRECTANGLE_H_

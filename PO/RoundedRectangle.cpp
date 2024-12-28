@@ -2,6 +2,8 @@
 
 #include "RoundedRectangle.h"
 
+#include <iostream>
+
 RoundedRectangle::RoundedRectangle()
     : m_size(), m_roundness() {
     update();
@@ -44,25 +46,23 @@ sf::Vector2f RoundedRectangle::getPoint(std::size_t index) const {
     float x = std::cos(angle) * m_roundness / 2;
     float y = std::sin(angle) * m_roundness / 2;
     float radius = std::min(m_size.x, m_size.y) * m_roundness / 2;
-    
-    sf::Vector2f position = getPosition();
-    sf::Vector2f cords(std::min(m_size.x, m_size.y) * x + std::abs(radius), std::min(m_size.x, m_size.y) * y + std::abs(radius));
 
+    sf::Vector2f cords(std::min(m_size.x, m_size.y) * x + radius, std::min(m_size.x, m_size.y) * y + radius);
     // top left corner
     if (index >= 0 && index < 8) {
-        return sf::Vector2f(position.x + cords.x, position.y + cords.y);
+        return sf::Vector2f(cords.x, cords.y);
     }
     // top right corner
     else if (index >= 8 && index < 16) {
-        return sf::Vector2f(position.x + m_size.x - 2 * radius + cords.x, position.y + cords.y);
+        return sf::Vector2f(m_size.x - 2 * radius + cords.x, cords.y);
     }
     // bottom right corner
     else if (index >= 16 && index < 24) {
-        return sf::Vector2f(position.x + m_size.x - 2 * radius + cords.x, position.y + m_size.y - 2 * radius + cords.y);
+        return sf::Vector2f(m_size.x - 2 * radius + cords.x, m_size.y - 2 * radius + cords.y);
     }
     // bottom left corner
     else if (index >= 24 && index < 32) {
-        return sf::Vector2f(position.x + cords.x, position.y + m_size.y - 2 * radius + cords.y);
+        return sf::Vector2f(cords.x, m_size.y - 2 * radius + cords.y);
     }
     else {
         return sf::Vector2f(0.f, 0.f);
