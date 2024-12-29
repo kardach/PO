@@ -25,6 +25,8 @@ public:
 
     bool contains(const sf::Vector2f&);
 
+    bool onClick(const sf::RenderWindow&, const sf::Event&);
+
     void draw(sf::RenderTarget&, sf::RenderStates) const override;
 private:
     void centerText();

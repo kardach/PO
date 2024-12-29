@@ -21,17 +21,27 @@ public:
 
     ~Radio();
 
-    void addOption(const std::string&, const std::string&);
+    void addOption(const std::string&, const std::string&);  // CAN ADD SAME TWICE
 
-    void setPosition(const sf::Vector2f&);
-
-    const std::size_t getSize() const;
+    const std::size_t getOptionCount() const;
 
     const std::vector<std::string> getNames() const;
 
-    Radio::Option option(const std::string&);
+    void setPosition(const sf::Vector2f&);
 
-    Radio::Option operator[](const std::string&);
+    const sf::Vector2f getPosition() const;
+
+    const sf::Vector2f getSize() const;
+
+    const std::string selected(); // UNSELECTED ERROR
+
+    void enable(const std::string&);
+
+    void disable(const std::string&);
+
+    bool isEnabled(const std::string&) const;
+
+    bool onClick(const sf::RenderWindow&, const sf::Event&);
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

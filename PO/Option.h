@@ -3,7 +3,9 @@
 #ifndef OPTION_H_
 #define OPTION_H_
 
-class Radio::Option : public sf::Drawable {
+#include "Checkable.h"
+
+class Radio::Option : public sf::Drawable, Checkable {
 private:
     Radio& m_radio;
 
@@ -14,6 +16,8 @@ private:
     sf::Text m_text;
 
     bool m_enabled;
+
+    bool m_checked;
 public:
     Option(Radio&, const std::string);
 
@@ -21,7 +25,7 @@ public:
 
     sf::Vector2f getSize();
 
-    void setPosition(sf::Vector2f&);
+    void setPosition(const sf::Vector2f&);
 
     sf::Vector2f getPosition();
 
@@ -32,6 +36,12 @@ public:
     void disable();
 
     bool isEnabled() const;
+
+    void check() override;
+
+    void uncheck() override;
+
+    bool isChecked() const override;
 
     void draw(sf::RenderTarget&, sf::RenderStates) const;
 };

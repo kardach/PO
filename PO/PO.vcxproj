@@ -145,6 +145,8 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="BorderTile.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Checkable.cpp" />
+    <ClCompile Include="Checkbox.cpp" />
     <ClCompile Include="CornerTile.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainTile.cpp" />
@@ -165,6 +167,8 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="BorderTile.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Checkable.h" />
+    <ClInclude Include="Checkbox.h" />
     <ClInclude Include="CornerTile.h" />
     <ClInclude Include="MainTile.h" />
     <ClInclude Include="Option.h" />

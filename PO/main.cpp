@@ -6,6 +6,7 @@
 #include "Button.h"
 #include "Radio.h"
 #include "Option.h"
+#include "Checkbox.h"
 #include "Board.h"
 
 int main() {
@@ -38,39 +39,58 @@ int main() {
     }
 
     Radio board_size;
-    board_size.setPosition(sf::Vector2f(0.f, 0.f));
-    board_size.addOption("8 x 8", "|8 x 8|");
-    board_size.addOption("10 x 10", "|10 x 10|");
-    board_size.addOption("12 x 12", "|12 x 12|");
+    {
+        board_size.setPosition(sf::Vector2f(0.f, 0.f));
+        board_size.addOption("8 x 8", "|8 x 8|");
+        board_size.addOption("10 x 10", "|10 x 10|");
+        board_size.addOption("12 x 12", "|12 x 12|");
+    }
 
     Radio row_count;
-    row_count.setPosition(sf::Vector2f(0.f, 100.f));
-    row_count.addOption("1", "|1|");
-    row_count.addOption("2", "|2|");
-    row_count.addOption("3", "|3|");
-    row_count.addOption("4", "|4|");
-    row_count.addOption("5", "|5|");
+    {
+        row_count.setPosition(sf::Vector2f(0.f, 100.f));
+        row_count.addOption("1", "|1|");
+        row_count.addOption("2", "|2|");
+        row_count.addOption("3", "|3|");
+        row_count.addOption("4", "|4|");
+        row_count.addOption("5", "|5|");
+        row_count.addOption("5", "|5|");
+    }
 
     Radio first_move;
-    
-    first_move.addOption("BLACK", "|BLACK|");
-    first_move.addOption("WHITE", "|WHITE|");
-    first_move.setPosition(sf::Vector2f(0.f, 200.f));
-
-    first_move.option("BLACK");
+    {
+        first_move.addOption("BLACK", "|BLACK|");
+        first_move.addOption("WHITE", "|WHITE|");
+        first_move.setPosition(sf::Vector2f(0.f, 200.f));
+    }
 
     Button start_game_button;
     {
         start_game_button.setSize(sf::Vector2f(200.f, 100.f));
-        start_game_button.setPosition(sf::Vector2f(0.f, 400.f));
+        start_game_button.setPosition(sf::Vector2f(400.f, 400.f));
         start_game_button.setFillColor(sf::Color::Red);
         start_game_button.setTextColor(sf::Color::Blue);
         start_game_button.setString("START GAME");
     }
 
+    Checkbox men_capture_backwards("|Men can capture backwards|");
+    men_capture_backwards.setPosition(sf::Vector2f(0.f, 300.f));
+
+    Checkbox mandatory_capture("|Mandatory capture|");
+    mandatory_capture.setPosition(sf::Vector2f(0.f, 350.f));
+
+    Checkbox kings_move_any_dist("|Kings can move any distance|");
+    kings_move_any_dist.setPosition(sf::Vector2f(0.f, 400.f));
+
+    Checkbox men_move_backwards("|Men can move backwards|");
+    men_move_backwards.setPosition(sf::Vector2f(0.f, 450.f));
+    
     bool game_started = false;
 
     bool settings_chosen = false;
+
+    auto test = []() {std::cout << "AAA" << std::endl; };
+    test();
 
     while (window.isOpen()) {
         sf::Event event;
@@ -78,68 +98,90 @@ int main() {
             if (event.type == sf::Event::Closed || event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape) {
                 window.close();
             }
-            else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2f cords = sf::Vector2f(sf::Mouse::getPosition(window));
-                if (!game_started) {
-                    if (new_game_button.contains(cords)) {
-                        game_started = true;
+            //std::cout << board_size.selected() << std::endl; // UNSELECTED ERROR
+            if (!game_started) {
+                if (new_game_button.onClick(window, event)) {
+                    game_started = true;
+                }
+                if (exit_button.onClick(window, event)) {
+                    window.close();
+                }
+            }
+            else if (!settings_chosen) {
+                if (board_size.onClick(window, event)) {
+                    std::string name = board_size.selected();
+                    std::cout << name << std::endl;
+                    if (name == "8 x 8") {
+                        row_count.disable("4");
+                        row_count.disable("5");
                     }
-                    if (exit_button.contains(cords)) {
-                        window.close();
+                    else if (name == "10 x 10") {
+                        row_count.enable("4");
+                        row_count.disable("5");
+                    }
+                    else if (name == "12 x 12") {
+                        row_count.enable("4");
+                        row_count.enable("5");
                     }
                 }
-                else if (!settings_chosen) {
-                    if (board_size["8 x 8"].isEnabled() && board_size["8 x 8"].contains(cords)) {
+                if (row_count.onClick(window, event)) {
+                    std::string name = row_count.selected();
+                    std::cout << name << std::endl;
+                    if (name == "1" || name == "2" || name == "3") {
+                        board_size.enable("8 x 8");
+                        board_size.enable("10 x 10");
+                    }
+                    else if (name == "4") {
+                        board_size.disable("8 x 8");
+                        board_size.enable("10 x 10");
+                    }
+                    else if (name == "5") {
+                        board_size.disable("8 x 8");
+                        board_size.disable("10 x 10");
+                        }
+                }
+                first_move.onClick(window, event);
+
+                men_capture_backwards.onClick(window, event);
+                mandatory_capture.onClick(window, event);
+                kings_move_any_dist.onClick(window, event);
+                men_move_backwards.onClick(window, event);
+
+                if (start_game_button.onClick(window, event)) {
+                    settings_chosen = true;
+                    std::string name = board_size.selected();
+                    if (name == "8 x 8") {
                         settings.setBoardSize(8);
-                        row_count["4"].disable();
-                        row_count["5"].disable();
                     }
-                    else if (board_size["10 x 10"].isEnabled() && board_size.option("10 x 10").contains(cords)) {
+                    else if (name == "10 x 10") {
                         settings.setBoardSize(10);
-                        row_count.option("5").disable();
-                        row_count.option("4").disable();
                     }
-                    else if (board_size["12 x 12"].isEnabled() && board_size.option("12 x 12").contains(cords)) {
+                    else if (name == "12 x 12") {
                         settings.setBoardSize(12);
-                        row_count["5"].enable();
-                        row_count["4"].enable();
                     }
-                    else if (row_count["1"].isEnabled() && row_count.option("1").contains(cords)) {
+                    name = row_count.selected();
+                    if (name == "1") {
                         settings.setPieceRowCount(1);
-                        board_size["10 x 10"].enable();
-                        board_size["8 x 8"].enable();
                     }
-                    else if (row_count["2"].isEnabled() && row_count.option("2").contains(cords)) {
+                    else if (name == "2") {
                         settings.setPieceRowCount(2);
-                        board_size["10 x 10"].enable();
-                        board_size["8 x 8"].enable();
                     }
-                    else if (row_count["3"].isEnabled() && row_count.option("3").contains(cords)) {
+                    else if (name == "3") {
                         settings.setPieceRowCount(3);
-                        board_size["10 x 10"].enable();
-                        board_size["8 x 8"].enable();
                     }
-                    else if (row_count["4"].isEnabled() && row_count.option("4").contains(cords)) {
+                    else if (name == "4") {
                         settings.setPieceRowCount(4);
-                        board_size["10 x 10"].enable();
-                        board_size["8 x 8"].disable();
                     }
-                    else if (row_count["5"].isEnabled() && row_count.option("5").contains(cords)) {
+                    else if (name == "5") {
                         settings.setPieceRowCount(5);
-                        board_size["10 x 10"].disable();
-                        board_size["8 x 8"].disable();
                     }
-                    else if (first_move.option("BLACK").contains(cords)) {
+                    name = first_move.selected();
+                    if (name == "BLACK") {
                         settings.setFirstMove(Settings::FirstMove::Black);
-                        first_move["WHITE"];
                     }
-                    else if (first_move.option("WHITE").contains(cords)) {
+                    else if (name == "White")
                         settings.setFirstMove(Settings::FirstMove::White);
-                    }
-                    else if (start_game_button.contains(cords)) {
-                        settings_chosen = true;
-                        board = Board(window.getSize(), settings);
-                    }
+                    board = Board(window.getSize(), settings);
                 }
             }
         }
@@ -153,6 +195,10 @@ int main() {
             window.draw(board_size);
             window.draw(row_count);
             window.draw(first_move);
+            window.draw(men_capture_backwards);
+            window.draw(mandatory_capture);
+            window.draw(kings_move_any_dist);
+            window.draw(men_move_backwards);
             window.draw(start_game_button);
         }
         else {

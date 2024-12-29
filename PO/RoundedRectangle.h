@@ -21,7 +21,7 @@ public:
 
     void setSize(const sf::Vector2f&);
 
-    const sf::Vector2f& getSize() const;
+    const sf::Vector2f& getOptionCount() const;
 
     virtual std::size_t getPointCount() const;
 

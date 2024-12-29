@@ -31,7 +31,7 @@ void RoundedRectangle::setSize(const sf::Vector2f& size) {
     update();
 }
 
-const sf::Vector2f& RoundedRectangle::getSize() const {
+const sf::Vector2f& RoundedRectangle::getOptionCount() const {
     return m_size;
 }
 
