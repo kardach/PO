@@ -35,6 +35,8 @@ public:
 
     const std::string selected(); // UNSELECTED ERROR
 
+    void unselect();
+
     void enable(const std::string&);
 
     void disable(const std::string&);

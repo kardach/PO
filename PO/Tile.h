@@ -14,6 +14,8 @@ public:
     virtual ~Tile();
 
     virtual void draw(sf::RenderTarget&, sf::RenderStates) const = 0;
+
+    bool contains(const sf::Vector2f&);
 };
 
 #endif // TILES_H_

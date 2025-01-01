@@ -7,9 +7,10 @@
 #include "MainTile.h"
 #include "Board.h"
 
-Board::Board(const sf::Vector2u& window_dimensions, const Settings& settings) {
-    m_size = settings.getBoardSize();
-    m_piece_count = settings.getPieceRowCount() * (settings.getBoardSize() - 2);
+Board::Board(const Settings& settings) {
+    m_size = settings.getBoardSize() + 2;
+    m_piece_count = settings.getPieceRowCount() * settings.getBoardSize();
+    sf::Vector2u window_dimensions = settings.getWindowDimensions();
 
     float window_heigth = (float)window_dimensions.y;
     float window_width = (float)window_dimensions.x;
@@ -33,6 +34,28 @@ float Board::getTileSize() const {
 
 sf::Vector2f Board::getOffset() const {
     return m_offset;
+}
+
+bool Board::onClick(const sf::RenderWindow& window, const sf::Event& event) {
+    sf::Vector2f cords(sf::Mouse::getPosition(window));
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+        for (std::size_t i = 0; i < m_tiles.size(); i++) {
+            if (m_tiles.at(i)->contains(cords)) {
+                return true;
+            }
+        }
+    }
+    return false;
+    
+}
+
+sf::Vector2i Board::getTileCords(const sf::Vector2f& cords) {
+    for (std::size_t i = 0; i < m_tiles.size(); i++) {
+        if (m_tiles[i]->contains(cords)) {
+            return sf::Vector2i(i / m_size, i % m_size);
+        }
+    }
+    return sf::Vector2i(-1, -1);
 }
 
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const {

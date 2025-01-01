@@ -19,13 +19,17 @@ private:
     std::vector<std::shared_ptr<Tile>> m_tiles;
 
 public:
-    Board(const sf::Vector2u&, const Settings&);
+    Board(const Settings&);
 
     ~Board();
 
     float getTileSize() const;
 
     sf::Vector2f getOffset() const;
+
+    bool onClick(const sf::RenderWindow&, const sf::Event&);
+
+    sf::Vector2i getTileCords(const sf::Vector2f&);
 
     void draw(sf::RenderTarget&, sf::RenderStates) const;
 private:

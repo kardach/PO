@@ -42,7 +42,7 @@ std::size_t RoundedRectangle::getPointCount() const {
 sf::Vector2f RoundedRectangle::getPoint(std::size_t index) const {
     static const float pi = 3.141592654f;
 
-    float angle = (index - index / 8) * 2 * pi / (getPointCount() - 4) - pi;
+    float angle = (index - index / 8.f) * 2.f * pi / (getPointCount() - 4) - pi;
     float x = std::cos(angle) * m_roundness / 2;
     float y = std::sin(angle) * m_roundness / 2;
     float radius = std::min(m_size.x, m_size.y) * m_roundness / 2;

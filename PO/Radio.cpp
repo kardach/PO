@@ -61,6 +61,13 @@ const std::string Radio::selected() { // UNSELECTED ERROR
     return m_names[m_selected];
 }
 
+void Radio::unselect() {
+    if (m_selected != m_names.size()) {
+        m_options[m_names[m_selected]]->uncheck();
+        m_selected = m_names.size();
+    }
+}
+
 void Radio::enable(const std::string& name) {
     m_options[name]->enable();
 }
