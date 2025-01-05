@@ -3,11 +3,11 @@
 #ifndef PIECE_H_
 #define PIECE_H_
 
+enum class Team : bool;
+
 class Piece : public sf::Drawable {
 public:
 	enum Type : bool { Man, King };
-
-	enum Team : bool { Black, White };
 private:
 	Type m_type;
 

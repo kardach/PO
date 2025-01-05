@@ -3,8 +3,6 @@
 #ifndef TILES_H
 #define TILES_H
 
-#include "Piece.h"
-
 class Tile : public sf::Transformable, public sf::Drawable {
 protected:
     sf::RectangleShape m_rectangle;

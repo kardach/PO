@@ -2,29 +2,18 @@
 #include <array>
 
 #include "Settings.h"
+#include "Team.h"
 
 Settings::Settings(const sf::Vector2u& window_dimensions) :
     m_window_dimensions(window_dimensions),
     m_board_size(0),
     m_piece_row_count(0),
-    m_first_move(FirstMove::Black),
+    m_first_move(Team::Black),
     m_mandatory_capture(false),
     m_men_move_backwards(false),
     m_men_capture_backwards(false),
     m_kings_fly(false) {
 }
-
-//Settings::Settings(
-//    const sf::Vector2u& window_dimensions,
-//    const unsigned int board_size,
-//    const unsigned int piece_row_count,
-//    FirstMove first_move
-//) : 
-//    m_window_dimensions(window_dimensions), 
-//    m_board_size(board_size + 2), 
-//    m_piece_row_count(piece_row_count), 
-//    m_first_move(first_move) {
-//}
 
 const sf::Vector2u Settings::getWindowDimensions() const {
     return m_window_dimensions;
@@ -46,11 +35,11 @@ const unsigned int Settings::getPieceRowCount() const {
     return m_piece_row_count;
 }
 
-void Settings::setFirstMove(const FirstMove first_move) {
+void Settings::setFirstMove(const Team& first_move) {
     m_first_move = first_move;
 }
 
-const Settings::FirstMove Settings::getFirstMove() const {
+const Team Settings::getFirstMove() const {
     return m_first_move;
 }
 

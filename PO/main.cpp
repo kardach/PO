@@ -1,143 +1,24 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-//#include <array>
 
-//#include "RoundedRectangle.h"
+#include "Team.h"
 #include "Settings.h"
 #include "Button.h"
 #include "Radio.h"
-//#include "Option.h"
 #include "Checkbox.h"
 #include "Board.h"
 #include "Arrow.h"
 #include "Move.h"
-//#include "MovePlanner.h"
-
-class MovePlanner {
-private:
-    unsigned int m_board_size;
-
-    //std::unique_ptr<Turn> m_turn;
-
-    std::vector<Move> m_moves;
-public:
-    MovePlanner(const Settings& settings);
-
-    ~MovePlanner();
-
-    int tryAdding(const sf::Vector2u& from, const sf::Vector2u& to);
-
-    std::vector<Move> getMoves();
-};
-
-MovePlanner::MovePlanner(const Settings& settings) {
-    m_board_size = settings.getBoardSize();
-    //m_turn = std::make_unique<Turn>(turn);
-}
-
-MovePlanner::~MovePlanner() {
-}
-
-int MovePlanner::tryAdding(const sf::Vector2u& from, const sf::Vector2u& to) {
-    if (1 <= from.x && from.x <= m_board_size && 1 <= from.y && from.y <= m_board_size
-        && 1 <= to.x && to.x <= m_board_size && 1 <= to.y && to.y <= m_board_size && from != to) {
-        if (m_moves.size() == 0) {
-            m_moves.push_back(Move(from, to));
-            //std::cout << "ADDED" << move.size() << std::endl;
-            return 1;
-        }
-        else {
-            if (m_moves.at(m_moves.size() - 1).to() == from) {
-                if (m_moves.at(m_moves.size() - 1).from() == to) {
-                    m_moves.pop_back();
-                    //std::cout << "REMOVED" << std::endl;
-                    return -1;
-                }
-                else {
-                    m_moves.push_back(Move(from, to));
-                    //std::cout << "ADDED" << move.m_submoves.size() << std::endl;
-                    return 1;
-                }
-            }
-        }
-    }
-    else {
-        //std::cout << "DIDNT ADD" << std::endl;
-        return 0;
-    }
-    return 0;
-}
-
-std::vector<Move> MovePlanner::getMoves() {
-    return m_moves;
-}
-
-class MoveDepiction : public sf::Drawable {
-private:
-    sf::Vector2f m_offset;
-    float m_tile_size;
-    unsigned int m_board_size;
-    std::vector<Arrow> m_arrows;
-public:
-    MoveDepiction(const Settings& settings, const Board& board) {
-        m_offset = board.getOffset();
-        m_tile_size = board.getTileSize();
-        m_board_size = settings.getBoardSize();
-
-        
-        
-    }
-    void update(std::vector<Move>& move) {
-        m_arrows.clear();
-        sf::Vector2f arrow_from;
-        sf::Vector2f arrow_to;
-        for (std::size_t i = 0; i < move.size(); i++) {
-            arrow_from = sf::Vector2f(move.at(i).from());
-            arrow_from *= m_tile_size;
-            arrow_from += sf::Vector2f(m_tile_size / 2, m_tile_size / 2);
-            arrow_from += m_offset;
-
-            arrow_to = sf::Vector2f(move.at(i).to());
-            arrow_to *= m_tile_size;
-            arrow_to += sf::Vector2f(m_tile_size / 2, m_tile_size / 2);
-            arrow_to += m_offset;
-            m_arrows.push_back(Arrow(arrow_from, arrow_to));
-        }
-    }
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-        for (std::size_t i = 0; i < m_arrows.size(); i++) {
-            m_arrows.at(i).draw(target, states);
-        }
-    }
-};
-
-
-
-enum class Turn : bool { Black, White };
-
-static Turn operator!(Turn& other) {
-    if (other == Turn::Black) {
-        return Turn::White;
-    }
-    else {
-        return Turn::Black;
-    }
-}
-
-
-
-
+#include "Turn.h"
+#include "MovePlanner.h"
+#include "MoveDepiction.h"
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Draughts", sf::Style::Close | sf::Style::Titlebar);
 
-    Settings settings(window.getSize());
-
     sf::RectangleShape background(sf::Vector2f(window.getSize()));
     background.setPosition(0.f, 0.f);
     background.setFillColor(sf::Color(128, 128, 128));
-
-    Board board(settings);
 
     Button new_game_button;
     {
@@ -226,12 +107,11 @@ int main() {
 
     bool settings_chosen = false;
 
-    auto test = []() {std::cout << "AAA" << std::endl; };
-    test();
+    std::shared_ptr<Settings> settings;
 
-    std::cout << "OK\n";
+    std::shared_ptr<Board> board;
 
-    Turn turn = Turn::Black;
+    std::shared_ptr<Turn> turn;
     
     std::vector<Move> move;
 
@@ -260,7 +140,7 @@ int main() {
             else if (!settings_chosen) {
                 if (board_size.onClick(window, event)) {
                     std::string name = board_size.selected();
-                    std::cout << name << std::endl;
+                    //std::cout << name << std::endl;
                     if (name == "8 x 8") {
                         row_count.disable("4");
                         row_count.disable("5");
@@ -276,7 +156,7 @@ int main() {
                 }
                 if (row_count.onClick(window, event)) {
                     std::string name = row_count.selected();
-                    std::cout << name << std::endl;
+                    //std::cout << name << std::endl;
                     if (name == "1" || name == "2" || name == "3") {
                         board_size.enable("8 x 8");
                         board_size.enable("10 x 10");
@@ -299,65 +179,67 @@ int main() {
 
                 if (start_game_button.onClick(window, event)) {
                     settings_chosen = true;
+
+                    settings = std::make_shared<Settings>(window.getSize());
+
                     std::string name = board_size.selected();
                     if (name == "8 x 8") {
-                        settings.setBoardSize(8);
+                        settings->setBoardSize(8);
                     }
                     else if (name == "10 x 10") {
-                        settings.setBoardSize(10);
+                        settings->setBoardSize(10);
                     }
                     else if (name == "12 x 12") {
-                        settings.setBoardSize(12);
+                        settings->setBoardSize(12);
                     }
                     name = row_count.selected();
                     if (name == "1") {
-                        settings.setPieceRowCount(1);
+                        settings->setPieceRowCount(1);
                     }
                     else if (name == "2") {
-                        settings.setPieceRowCount(2);
+                        settings->setPieceRowCount(2);
                     }
                     else if (name == "3") {
-                        settings.setPieceRowCount(3);
+                        settings->setPieceRowCount(3);
                     }
                     else if (name == "4") {
-                        settings.setPieceRowCount(4);
+                        settings->setPieceRowCount(4);
                     }
                     else if (name == "5") {
-                        settings.setPieceRowCount(5);
+                        settings->setPieceRowCount(5);
                     }
                     name = first_move.selected();
                     if (name == "BLACK") {
-                        settings.setFirstMove(Settings::FirstMove::Black);
+                        settings->setFirstMove(Team::Black);
                     }
                     else if (name == "WHITE") {
-                        settings.setFirstMove(Settings::FirstMove::White);
+                        settings->setFirstMove(Team::White);
                     }
-                    board = Board(settings);
-                    turn = Turn(settings.getFirstMove());
+                    board = std::make_shared<Board>(*settings);
+                    turn = std::make_shared<Turn>(*settings);
                     
-                    move_planner = std::make_shared<MovePlanner>(settings);
+                    move_planner = std::make_shared<MovePlanner>(*settings, *turn);
                     move = move_planner->getMoves();
-                    move_depiction = std::make_shared<MoveDepiction>(settings, board);
+                    move_depiction = std::make_shared<MoveDepiction>(*settings, *board);
                 }
             }
             else {
-                
-                if (board.onClick(window, event)) {
-                    sf::Vector2u cords(board.getTileCords(sf::Vector2f(sf::Mouse::getPosition(window))));
-                    unsigned int board_size = settings.getBoardSize();
-                    //std::cout << cords.x << " " << cords.y << " " << board_size << std::endl; 
+                if (board->onClick(window, event)) {
+                    sf::Vector2u cords(board->getTileCords(sf::Vector2f(sf::Mouse::getPosition(window))));
+                    unsigned int board_size = settings->getBoardSize();
                     if (from == sf::Vector2u(0, 0)) {
-                        if (move.size() == 0 && board.hasPiece(cords, (Piece::Team)turn)) {
+                        if (move.size() == 0 && board->hasPiece(cords, turn->getTeam())) {
                             from = cords;
-                            std::cout << from.x << " " << from.y << " " << to.x << " " << to.y << std::endl;
+                            //std::cout << "FIRST" << from.x << " " << from.y << "\n";
                         }
                         else if (move.size() > 0) {
                             from = cords;
-                            std::cout << from.x << " " << from.y << " " << to.x << " " << to.y << std::endl;
+                            //std::cout << "FIRST" << from.x << " " << from.y << "\n";
                         }
                     }
                     else if (to == sf::Vector2u(0, 0)) {
                         to = cords;
+                        //std::cout << "SECOND" << to.x << " " << to.y << "\n";
                         if (move_planner->tryAdding(from, to) != 0) {
                             from = sf::Vector2u(0, 0);
                             to = sf::Vector2u(0, 0);
@@ -367,12 +249,16 @@ int main() {
                             from = to;
                             to = sf::Vector2u(0, 0);
                         }
-                        std::cout << from.x << " " << from.y << " " << to.x << " " << to.y << std::endl;
                     }                    
                 }
                 if (confirm_move_button.onClick(window, event)) {
-                    move.clear();
-                    turn = !turn;
+                    std::cout << "BEFORE" << (bool)turn->getTeam() << " " << move.size() << "\n";
+                    //move.clear();
+                    move_planner->clear();
+                    move = move_planner->getMoves();
+                    move_depiction->update(move);
+                    turn->change();
+                    std::cout << "AFTER" << (bool)turn->getTeam() << " " << move.size() << "\n";
                     from = sf::Vector2u(0, 0);
                     to = sf::Vector2u(0, 0);
                     // MAKE MOVE ON BOARD
@@ -395,6 +281,8 @@ int main() {
                     men_move_backwards.uncheck();
                     mandatory_capture.uncheck();
                     kings_move_any_dist.uncheck();
+                    from = sf::Vector2u(0, 0);
+                    to = sf::Vector2u(0, 0);
                 }
                 
             }
@@ -416,7 +304,7 @@ int main() {
             window.draw(start_game_button);
         }
         else {
-            window.draw(board);
+            window.draw(*board);
             window.draw(confirm_move_button);
             window.draw(quit_game_button);
             window.draw(*move_depiction);

@@ -3,8 +3,10 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
-#include "Settings.h"
-#include "Tile.h"
+enum class Team : bool;
+class Settings;
+class Tile;
+class Piece;
 
 class Board : public sf::Drawable {
 private:
@@ -31,7 +33,7 @@ public:
 
     sf::Vector2i getTileCords(const sf::Vector2f&);
 
-    bool hasPiece(const sf::Vector2u&, const Piece::Team&);
+    bool hasPiece(const sf::Vector2u&, const Team&);
 
     void draw(sf::RenderTarget&, sf::RenderStates) const;
 private:

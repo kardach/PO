@@ -1,13 +1,15 @@
 #include <SFML/Graphics.hpp>
 
+//#include <iostream>
+
+#include "Board.h"
+#include "Team.h"
 #include "Settings.h"
 #include "Tile.h"
 #include "CornerTile.h"
 #include "BorderTile.h"
 #include "MainTile.h"
-#include "Board.h"
-
-#include <iostream>
+#include "Piece.h"
 
 Board::Board(const Settings& settings) {
     m_size = settings.getBoardSize() + 2;
@@ -66,17 +68,13 @@ void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 }
 
-bool Board::hasPiece(const sf::Vector2u& cords,const Piece::Team& team) {
+bool Board::hasPiece(const sf::Vector2u& cords,const Team& team) {
     if (std::dynamic_pointer_cast<MainTile>(m_tiles.at(m_size * cords.x + cords.y))) {
-        std::cout << "MAIN TILE\n";
         if (std::dynamic_pointer_cast<MainTile>(m_tiles.at(m_size * cords.x + cords.y))->hasPiece()) {
-            std::cout << "HAS PIECE\n";
             std::unique_ptr<Piece> piece = std::dynamic_pointer_cast<MainTile>(m_tiles.at(m_size * cords.x + cords.y))->removePiece();
-            Piece::Team piece_team = piece->getTeam();
+            Team piece_team = piece->getTeam();
             std::dynamic_pointer_cast<MainTile>(m_tiles.at(m_size * cords.x + cords.y))->placePiece(std::move(piece));
-            std::cout << piece_team << " " << team << " " << (piece_team == team) << "\n";
             if (piece_team == team) {
-                std::cout << "COLOR " << team << "\n";
                 return true;
             }
         }
@@ -115,7 +113,7 @@ std::vector<std::unique_ptr<Piece>> Board::createPieces(const unsigned int piece
     std::vector<std::unique_ptr<Piece>> pieces;
 
     for (unsigned int i = 0; i < piece_count; i++) {
-        pieces.push_back(std::make_unique<Piece>(radius, Piece::Type::Man, i < piece_count / 2 ? Piece::Team::White : Piece::Team::Black));
+        pieces.push_back(std::make_unique<Piece>(radius, Piece::Type::Man, i < piece_count / 2 ? Team::White : Team::Black));
     }
 
     return pieces;
@@ -139,5 +137,4 @@ void Board::placePieces(const unsigned int size, std::vector<std::shared_ptr<Til
             col = (row - 1) % 2 + 1;
         }
     }
-
 }

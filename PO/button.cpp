@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-#include "RoundedRectangle.h"
 #include "Button.h"
+#include "RoundedRectangle.h"
 
 Button::Button() {
 	m_round_rect = RoundedRectangle();

@@ -1,7 +1,5 @@
 #pragma once
 
-//#include "Option.h"
-
 #ifndef RADIO_H_
 #define RADIOH_
 
@@ -47,38 +45,5 @@ public:
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
-
-//class Radio::Option : public sf::Drawable {
-//private:
-//    Radio& m_radio;
-//
-//    sf::CircleShape m_circle;
-//
-//    sf::Font m_font;
-//
-//    sf::Text m_text;
-//
-//    bool m_enabled;
-//public:
-//    Option(Radio&, const std::string);
-//
-//    ~Option();
-//
-//    sf::Vector2f getSize();
-//
-//    void setPosition(sf::Vector2f&);
-//
-//    sf::Vector2f getPosition();
-//
-//    bool contains(const sf::Vector2f&);
-//
-//    void enable();
-//
-//    void disable();
-//
-//    bool isEnabled() const;
-//
-//    void draw(sf::RenderTarget&, sf::RenderStates) const;
-//};
 
 #endif // RADIO_H_

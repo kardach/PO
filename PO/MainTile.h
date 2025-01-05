@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Piece.h"
-
 #ifndef MAINTILE_H_
 #define MAINTILE_H_
+
+class Piece;
 
 class MainTile : public Tile {
 private:

@@ -3,9 +3,10 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
+enum class Team : bool;
+#include <SFML/Graphics.hpp>
+
 class Settings {
-public:
-    enum FirstMove : bool { Black, White };
 private:
     sf::Vector2u m_window_dimensions;
 
@@ -13,7 +14,7 @@ private:
 
     unsigned int m_piece_row_count;
     
-    FirstMove m_first_move;
+    Team m_first_move;
 
     bool m_mandatory_capture;
 
@@ -25,8 +26,6 @@ private:
 public:
     Settings(const sf::Vector2u&);
 
-    //Settings(const sf::Vector2u&, const unsigned int, const unsigned int, FirstMove);
-
     const sf::Vector2u getWindowDimensions() const;
 
     void setBoardSize(const unsigned int);
@@ -37,9 +36,9 @@ public:
 
     const unsigned int getPieceRowCount() const;
 
-    void setFirstMove(const FirstMove);
+    void setFirstMove(const Team&);
 
-    const FirstMove getFirstMove() const;
+    const Team getFirstMove() const;
 
     void setGameplayRules(const bool, const bool, const bool, const bool);
 

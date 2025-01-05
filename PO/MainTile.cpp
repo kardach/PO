@@ -2,6 +2,7 @@
 
 #include "Tile.h"
 #include "MainTile.h"
+#include "Piece.h"
 
 MainTile::MainTile(const float size, const sf::Vector2f& position, const bool team)
     : Tile(size, position, team ? sf::Color(255, 228, 196) : sf::Color(139, 69, 19)) {
