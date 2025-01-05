@@ -7,6 +7,8 @@
 #include "MainTile.h"
 #include "Board.h"
 
+#include <iostream>
+
 Board::Board(const Settings& settings) {
     m_size = settings.getBoardSize() + 2;
     m_piece_count = settings.getPieceRowCount() * settings.getBoardSize();
@@ -21,7 +23,7 @@ Board::Board(const Settings& settings) {
     float y_offset = (window_heigth < window_width) ? 0 : (window_width - m_size * m_tile_size) / 2;
     m_offset = sf::Vector2f(x_offset, y_offset);
     m_tiles = createBoard(m_size, m_offset, m_tile_size);
-    std::vector<std::shared_ptr<Piece>> pieces = createPieces(m_piece_count, m_tile_size / 2.f);
+    std::vector<std::unique_ptr<Piece>> pieces = createPieces(m_piece_count, m_tile_size / 2.f);
     placePieces(m_size, m_tiles, pieces);
 }
 
@@ -52,7 +54,7 @@ bool Board::onClick(const sf::RenderWindow& window, const sf::Event& event) {
 sf::Vector2i Board::getTileCords(const sf::Vector2f& cords) {
     for (std::size_t i = 0; i < m_tiles.size(); i++) {
         if (m_tiles[i]->contains(cords)) {
-            return sf::Vector2i(i / m_size, i % m_size);
+            return sf::Vector2i((int)i / m_size, (int)i % m_size);
         }
     }
     return sf::Vector2i(-1, -1);
@@ -62,6 +64,24 @@ void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     for (int i = 0; i < m_tiles.size(); i++) {
         m_tiles.at(i)->draw(target, states);
     }
+}
+
+bool Board::hasPiece(const sf::Vector2u& cords,const Piece::Team& team) {
+    if (std::dynamic_pointer_cast<MainTile>(m_tiles.at(m_size * cords.x + cords.y))) {
+        std::cout << "MAIN TILE\n";
+        if (std::dynamic_pointer_cast<MainTile>(m_tiles.at(m_size * cords.x + cords.y))->hasPiece()) {
+            std::cout << "HAS PIECE\n";
+            std::unique_ptr<Piece> piece = std::dynamic_pointer_cast<MainTile>(m_tiles.at(m_size * cords.x + cords.y))->removePiece();
+            Piece::Team piece_team = piece->getTeam();
+            std::dynamic_pointer_cast<MainTile>(m_tiles.at(m_size * cords.x + cords.y))->placePiece(std::move(piece));
+            std::cout << piece_team << " " << team << " " << (piece_team == team) << "\n";
+            if (piece_team == team) {
+                std::cout << "COLOR " << team << "\n";
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 std::vector<std::shared_ptr<Tile>> Board::createBoard(const unsigned int size, const sf::Vector2f& offset, const float tile_size) {
@@ -91,17 +111,17 @@ std::vector<std::shared_ptr<Tile>> Board::createBoard(const unsigned int size, c
     return Tiles;
 }
 
-std::vector<std::shared_ptr<Piece>> Board::createPieces(const unsigned int piece_count, const float radius) {
-    std::vector<std::shared_ptr<Piece>> pieces;
+std::vector<std::unique_ptr<Piece>> Board::createPieces(const unsigned int piece_count, const float radius) {
+    std::vector<std::unique_ptr<Piece>> pieces;
 
     for (unsigned int i = 0; i < piece_count; i++) {
-        pieces.push_back(std::make_shared<Piece>(radius, Piece::Type::Man, i < piece_count / 2 ? Piece::Team::White : Piece::Team::Black));
+        pieces.push_back(std::make_unique<Piece>(radius, Piece::Type::Man, i < piece_count / 2 ? Piece::Team::White : Piece::Team::Black));
     }
 
     return pieces;
 }
 
-void Board::placePieces(const unsigned int size, std::vector<std::shared_ptr<Tile>> tiles, std::vector<std::shared_ptr<Piece>> pieces) {
+void Board::placePieces(const unsigned int size, std::vector<std::shared_ptr<Tile>> tiles, std::vector<std::unique_ptr<Piece>>& pieces) {
     std::size_t row = 1;
     std::size_t col = 1;
     std::size_t piece_count = pieces.size();
@@ -111,7 +131,7 @@ void Board::placePieces(const unsigned int size, std::vector<std::shared_ptr<Til
             row += ((size - 2) * (size - 2) - piece_count * 2) / (size - 2);
             flag = false;
         }
-        std::dynamic_pointer_cast<MainTile>(tiles.at(col * size + row))->placePiece(pieces.at(pieces.size() - 1));
+        std::dynamic_pointer_cast<MainTile>(tiles.at(col * size + row))->placePiece(std::move(pieces.at(pieces.size() - 1)));
         pieces.pop_back();
         col += 2;
         if (col >= size - 1) {

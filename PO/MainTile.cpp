@@ -18,7 +18,7 @@ void MainTile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 }
 
-void MainTile::placePiece(std::shared_ptr<Piece> piece) {
+void MainTile::placePiece(std::unique_ptr<Piece> piece) {
     m_piece = std::move(piece);
     m_piece->setPosition(m_rectangle.getPosition());
 }
@@ -27,6 +27,6 @@ const bool MainTile::hasPiece() const {
     return m_piece != nullptr;
 }
 
-std::shared_ptr<Piece> MainTile::removePiece() {
+std::unique_ptr<Piece> MainTile::removePiece() {
     return std::move(m_piece);
 }

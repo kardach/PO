@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="BorderTile.cpp" />
     <ClCompile Include="Button.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="CornerTile.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainTile.cpp" />
+    <ClCompile Include="Move.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="Radio.cpp" />
@@ -164,6 +166,7 @@
     <Font Include="ariblk.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="BorderTile.h" />
     <ClInclude Include="Button.h" />
@@ -171,6 +174,7 @@
     <ClInclude Include="Checkbox.h" />
     <ClInclude Include="CornerTile.h" />
     <ClInclude Include="MainTile.h" />
+    <ClInclude Include="Move.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="Radio.h" />

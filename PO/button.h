@@ -3,6 +3,8 @@
 #ifndef BUTTON_H_
 #define BUTTON_H_
 
+#include "RoundedRectangle.h"
+
 class Button : public sf::Drawable {
 private:
     RoundedRectangle m_round_rect;

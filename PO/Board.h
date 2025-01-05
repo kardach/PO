@@ -31,13 +31,15 @@ public:
 
     sf::Vector2i getTileCords(const sf::Vector2f&);
 
+    bool hasPiece(const sf::Vector2u&, const Piece::Team&);
+
     void draw(sf::RenderTarget&, sf::RenderStates) const;
 private:
-    static std::vector<std::shared_ptr<Tile>> createBoard(const unsigned int, const sf::Vector2f&, const float);
+    std::vector<std::shared_ptr<Tile>> createBoard(const unsigned int, const sf::Vector2f&, const float);
 
-    static std::vector<std::shared_ptr<Piece>> createPieces(const unsigned int, const float);
+    std::vector<std::unique_ptr<Piece>> createPieces(const unsigned int, const float);
 
-    static void placePieces(const unsigned int, std::vector<std::shared_ptr<Tile>>, std::vector<std::shared_ptr<Piece>>);
+    void placePieces(const unsigned int, std::vector<std::shared_ptr<Tile>>, std::vector<std::unique_ptr<Piece>>&);
 };
 
 #endif // BOARD_H_

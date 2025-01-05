@@ -3,13 +3,15 @@
 #ifndef PIECE_H_
 #define PIECE_H_
 
-class Piece : public sf::Transformable, public sf::Drawable {
+class Piece : public sf::Drawable {
 public:
 	enum Type : bool { Man, King };
 
 	enum Team : bool { Black, White };
 private:
 	Type m_type;
+
+	Team m_team;
 
 	sf::CircleShape m_circle;
 public:
@@ -18,6 +20,10 @@ public:
 	~Piece();
 
 	void setPosition(const sf::Vector2f&);
+
+	Type getType() const;
+
+	Team getTeam() const;
 
 	void draw(sf::RenderTarget&, sf::RenderStates) const;
 };

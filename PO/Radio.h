@@ -6,9 +6,9 @@
 #define RADIOH_
 
 class Radio : public sf::Drawable {
-public:    
+private:    
     class Option;
-private:
+
     sf::Vector2f m_position;
 
     std::size_t m_selected;

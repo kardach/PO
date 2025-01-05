@@ -5,7 +5,7 @@
 
 #include "Checkable.h"
 
-class Radio::Option : public sf::Drawable, Checkable {
+class Radio::Option : public sf::Drawable, public Checkable {
 private:
     Radio& m_radio;
 

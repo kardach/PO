@@ -7,7 +7,7 @@
 
 class MainTile : public Tile {
 private:
-    std::shared_ptr<Piece> m_piece;
+    std::unique_ptr<Piece> m_piece;
 public:
     MainTile(const float, const sf::Vector2f&, const bool);
 
@@ -15,11 +15,11 @@ public:
 
     void draw(sf::RenderTarget&, sf::RenderStates) const override;
 
-    void placePiece(std::shared_ptr<Piece>);
+    void placePiece(std::unique_ptr<Piece>);
 
     const bool hasPiece() const;
 
-    std::shared_ptr<Piece> removePiece();
+    std::unique_ptr<Piece> removePiece();
 };
 
 #endif // MAINTILE_H_

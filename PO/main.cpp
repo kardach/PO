@@ -2,141 +2,131 @@
 #include <iostream>
 //#include <array>
 
-#include "RoundedRectangle.h"
+//#include "RoundedRectangle.h"
 #include "Settings.h"
 #include "Button.h"
 #include "Radio.h"
 //#include "Option.h"
 #include "Checkbox.h"
 #include "Board.h"
+#include "Arrow.h"
+#include "Move.h"
+//#include "MovePlanner.h"
 
-class Arrow : public sf::Drawable {
+class MovePlanner {
 private:
-    sf::CircleShape m_head;
-    sf::RectangleShape m_shaft;
-    sf::Vector2f m_from;
-    sf::Vector2f m_to;
+    unsigned int m_board_size;
+
+    //std::unique_ptr<Turn> m_turn;
+
+    std::vector<Move> m_moves;
 public:
-    Arrow() {
-        m_from = sf::Vector2f();
-        m_to = sf::Vector2f();
-        m_head = sf::CircleShape();
-        m_shaft = sf::RectangleShape();
-    }
-    Arrow(const sf::Vector2f& from, const sf::Vector2f& to) {
-        m_from = from;
-        m_to = to;
-        float delta_x = to.x - from.x;
-        float delta_y = to.y - from.y;
-        static const float pi = 3.141592654f;
-        float length = std::sqrt(std::pow(delta_x, 2.f) + std::pow(delta_y, 2.f));
-        float radians = std::atan(delta_y / delta_x);
-        float angle =  radians * 180.f / pi;
+    MovePlanner(const Settings& settings);
 
-        float head_x = (length - 20.f) * std::cos(radians) * (delta_x < 0 ? -1.f : 1.f);
-        float head_y = (length - 20.f) * std::sin(radians) * (delta_x < 0 ? -1.f : 1.f);
-        std::cout << delta_x << " " << delta_y << std::endl;
-        std::cout << "ANGLE: " << angle << " " << std::sin(angle) << " " << std::cos(angle) << std::endl;
-        std::cout << head_x << " " << head_y << std::endl;
+    ~MovePlanner();
 
-        m_head = sf::CircleShape();
-        m_head.setPosition(sf::Vector2f(from.x + head_x, from.y + head_y));
-        m_head.setPointCount(3);
-        m_head.setRadius(20.f);
-        m_head.setOrigin(sf::Vector2f(20.f, 20.f));
-        m_head.setFillColor(sf::Color(255, 0, 0, 192));
-        m_head.rotate((delta_x < 0 ? -90.f : 90.f) + angle);
+    int tryAdding(const sf::Vector2u& from, const sf::Vector2u& to);
 
-        m_shaft = sf::RectangleShape();
-        m_shaft.setPosition(from);
-        m_shaft.setSize(sf::Vector2f(20.f, length - 10.f - 20.f));
-        m_shaft.setOrigin(sf::Vector2f(10.f, 0.f));
-        m_shaft.setFillColor(sf::Color(255, 0, 0, 192));
-        m_shaft.rotate((delta_x < 0 ? 90.f : -90.f) + angle);
-    }
-    void setThickness(float thickness) {
-        sf::Vector2f size = m_shaft.getSize();
-        size.x = thickness;
-        m_shaft.setSize(size);
-        m_shaft.setOrigin(sf::Vector2f(thickness / 2, 0.f));
-    }
-    void setHeadSize(float radius) {
-        sf::Vector2f size = m_shaft.getSize();
-        float delta_x = m_to.x - m_from.x;
-        float delta_y = m_to.y - m_from.y;
-        float radians = std::atan(delta_y / delta_x);
-        float length = std::sqrt(std::pow(delta_x, 2.f) + std::pow(delta_y, 2.f));
-        size.y = length - 1.5f * radius;
-        float head_x = (length - radius) * std::cos(radians) * (delta_x < 0 ? -1.f : 1.f);
-        float head_y = (length - radius) * std::sin(radians) * (delta_x < 0 ? -1.f : 1.f);
-
-        m_head.setPosition(sf::Vector2f(m_from.x + head_x, m_from.y + head_y));
-        m_head.setRadius(radius);
-        m_head.setOrigin(sf::Vector2f(radius, radius));
-        
-        m_shaft.setSize(size);
-    }
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-        target.draw(m_head, states);
-        target.draw(m_shaft, states);
-    }
+    std::vector<Move> getMoves();
 };
 
-class Move : public sf::Drawable {
-private:
-    class SubMove : public sf::Drawable {
-    public:
-        sf::Vector2i from;
-        sf::Vector2i to;
-    private:
-        Move& m_move;
-        Arrow m_arrow;
-    public:
-        SubMove(Move& move, const sf::Vector2i& from, const sf::Vector2i& to) : m_move(move), from(from), to(to) {
-            sf::Vector2f arrow_from(from);
-            arrow_from *= m_move.m_tile_size;
-            arrow_from += sf::Vector2f(m_move.m_tile_size / 2, m_move.m_tile_size /2);
-            arrow_from += m_move.m_offset;
-            sf::Vector2f arrow_to(to);
-            arrow_to *= m_move.m_tile_size;
-            arrow_to += sf::Vector2f(m_move.m_tile_size / 2, m_move.m_tile_size / 2);
-            arrow_to += m_move.m_offset;
-            m_arrow = Arrow(arrow_from, arrow_to);
+MovePlanner::MovePlanner(const Settings& settings) {
+    m_board_size = settings.getBoardSize();
+    //m_turn = std::make_unique<Turn>(turn);
+}
+
+MovePlanner::~MovePlanner() {
+}
+
+int MovePlanner::tryAdding(const sf::Vector2u& from, const sf::Vector2u& to) {
+    if (1 <= from.x && from.x <= m_board_size && 1 <= from.y && from.y <= m_board_size
+        && 1 <= to.x && to.x <= m_board_size && 1 <= to.y && to.y <= m_board_size && from != to) {
+        if (m_moves.size() == 0) {
+            m_moves.push_back(Move(from, to));
+            //std::cout << "ADDED" << move.size() << std::endl;
+            return 1;
         }
-        ~SubMove() {
-        }
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-            
-            target.draw(m_arrow, states);
-        }
-    };
-    std::vector<std::shared_ptr<SubMove>> m_submoves;
-    sf::Vector2f m_offset;
-    float m_tile_size;
-public:
-    Move(const Board& board) {
-        m_offset = board.getOffset();
-        m_tile_size = board.getTileSize();
-    }
-    ~Move() {
-    }
-    void add(const sf::Vector2i& from, const sf::Vector2i& to) {
-        
-        if (m_submoves.size() > 0) {
-            if (m_submoves.at(m_submoves.size() - 1)->from == to && m_submoves.at(m_submoves.size() - 1)->to == from) {
-                m_submoves.pop_back();
+        else {
+            if (m_moves.at(m_moves.size() - 1).to() == from) {
+                if (m_moves.at(m_moves.size() - 1).from() == to) {
+                    m_moves.pop_back();
+                    //std::cout << "REMOVED" << std::endl;
+                    return -1;
+                }
+                else {
+                    m_moves.push_back(Move(from, to));
+                    //std::cout << "ADDED" << move.m_submoves.size() << std::endl;
+                    return 1;
+                }
             }
         }
-        m_submoves.push_back(std::make_shared<SubMove>(*this, from, to));
-        std::cout << "ADDED" << m_submoves.size() << std::endl;
+    }
+    else {
+        //std::cout << "DIDNT ADD" << std::endl;
+        return 0;
+    }
+    return 0;
+}
+
+std::vector<Move> MovePlanner::getMoves() {
+    return m_moves;
+}
+
+class MoveDepiction : public sf::Drawable {
+private:
+    sf::Vector2f m_offset;
+    float m_tile_size;
+    unsigned int m_board_size;
+    std::vector<Arrow> m_arrows;
+public:
+    MoveDepiction(const Settings& settings, const Board& board) {
+        m_offset = board.getOffset();
+        m_tile_size = board.getTileSize();
+        m_board_size = settings.getBoardSize();
+
+        
+        
+    }
+    void update(std::vector<Move>& move) {
+        m_arrows.clear();
+        sf::Vector2f arrow_from;
+        sf::Vector2f arrow_to;
+        for (std::size_t i = 0; i < move.size(); i++) {
+            arrow_from = sf::Vector2f(move.at(i).from());
+            arrow_from *= m_tile_size;
+            arrow_from += sf::Vector2f(m_tile_size / 2, m_tile_size / 2);
+            arrow_from += m_offset;
+
+            arrow_to = sf::Vector2f(move.at(i).to());
+            arrow_to *= m_tile_size;
+            arrow_to += sf::Vector2f(m_tile_size / 2, m_tile_size / 2);
+            arrow_to += m_offset;
+            m_arrows.push_back(Arrow(arrow_from, arrow_to));
+        }
     }
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-        
-        for (std::size_t i = 0; i < m_submoves.size(); i++) {
-            m_submoves.at(i)->draw(target, states);
+        for (std::size_t i = 0; i < m_arrows.size(); i++) {
+            m_arrows.at(i).draw(target, states);
         }
     }
 };
+
+
+
+enum class Turn : bool { Black, White };
+
+static Turn operator!(Turn& other) {
+    if (other == Turn::Black) {
+        return Turn::White;
+    }
+    else {
+        return Turn::Black;
+    }
+}
+
+
+
+
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Draughts", sf::Style::Close | sf::Style::Titlebar);
@@ -239,50 +229,21 @@ int main() {
     auto test = []() {std::cout << "AAA" << std::endl; };
     test();
 
-    enum Turn : bool { Black, White };
+    std::cout << "OK\n";
 
-    Turn turn = Black;
-
-    Move move(board);
-
-    //bool test[4] = { false, false, false, false };
-
-    /*sf::Vector2f from(200.f, 200.f);
-    sf::Vector2f to(200.f, 100.f);
-
-    sf::CircleShape pointA;
-    pointA.setRadius(10.f);
-    pointA.setPosition(from);
-    pointA.setOrigin(sf::Vector2f(pointA.getRadius(), pointA.getRadius()));
-    pointA.setFillColor(sf::Color::Red);
-
-    sf::CircleShape pointB;
-    pointB.setPosition(to);
-    pointB.setRadius(10.f);
-    pointB.setOrigin(sf::Vector2f(pointB.getRadius(), pointB.getRadius()));
-    pointB.setFillColor(sf::Color::Green);
-
-    Arrow arrow(from ,to);*/
-    //arrow.setHeadSize(40.f);
-    //arrow.setThickness(100.f);
-    //Arrow arrow(from ,to);
+    Turn turn = Turn::Black;
     
-    sf::Vector2i from;
-    sf::Vector2i to;
-    
+    std::vector<Move> move;
 
-    //to = sf::Vector2f(sf::Mouse::getPosition(window));
+    sf::Vector2u from;
+    sf::Vector2u to;
+
+    std::shared_ptr<MovePlanner> move_planner;
+
+    std::shared_ptr<MoveDepiction> move_depiction;
+
     while (window.isOpen()) {
         sf::Event event;
-
-        /*if (sf::Vector2f(sf::Mouse::getPosition(window)) != to) {
-            to = sf::Vector2f(sf::Mouse::getPosition(window));
-            arrow = Arrow(from, to);
-            arrow.setHeadSize(40.f);
-            arrow.setThickness(100.f);
-        }*/
-        
-
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed || event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape) {
                 window.close();
@@ -373,36 +334,47 @@ int main() {
                     }
                     board = Board(settings);
                     turn = Turn(settings.getFirstMove());
-                    move = Move(board);
+                    
+                    move_planner = std::make_shared<MovePlanner>(settings);
+                    move = move_planner->getMoves();
+                    move_depiction = std::make_shared<MoveDepiction>(settings, board);
                 }
             }
             else {
                 
                 if (board.onClick(window, event)) {
-                    sf::Vector2i cords(board.getTileCords(sf::Vector2f(sf::Mouse::getPosition(window))));
-                    int board_size = (int)settings.getBoardSize();
-                    //std::cout << cords.x << " " << cords.y << " " << board_size << std::endl;
-                    if (1 <= cords.x && cords.x <= board_size && 1 <= cords.y && cords.y <= board_size) {
-                        
-                        if (from == sf::Vector2i(0, 0)) {
+                    sf::Vector2u cords(board.getTileCords(sf::Vector2f(sf::Mouse::getPosition(window))));
+                    unsigned int board_size = settings.getBoardSize();
+                    //std::cout << cords.x << " " << cords.y << " " << board_size << std::endl; 
+                    if (from == sf::Vector2u(0, 0)) {
+                        if (move.size() == 0 && board.hasPiece(cords, (Piece::Team)turn)) {
                             from = cords;
                             std::cout << from.x << " " << from.y << " " << to.x << " " << to.y << std::endl;
                         }
-                        else if (to == sf::Vector2i(0, 0)) {
-                            to = cords;
-                            move.add(from, to);
+                        else if (move.size() > 0) {
+                            from = cords;
                             std::cout << from.x << " " << from.y << " " << to.x << " " << to.y << std::endl;
-
-                            from = sf::Vector2i(0, 0);
-                            to = sf::Vector2i(0, 0);
                         }
-                        
-
                     }
+                    else if (to == sf::Vector2u(0, 0)) {
+                        to = cords;
+                        if (move_planner->tryAdding(from, to) != 0) {
+                            from = sf::Vector2u(0, 0);
+                            to = sf::Vector2u(0, 0);
+                            move = move_planner->getMoves();
+                            move_depiction->update(move);
+                        } else {
+                            from = to;
+                            to = sf::Vector2u(0, 0);
+                        }
+                        std::cout << from.x << " " << from.y << " " << to.x << " " << to.y << std::endl;
+                    }                    
                 }
                 if (confirm_move_button.onClick(window, event)) {
-                    turn = (Turn)!turn;
-                    move = Move(board);
+                    move.clear();
+                    turn = !turn;
+                    from = sf::Vector2u(0, 0);
+                    to = sf::Vector2u(0, 0);
                     // MAKE MOVE ON BOARD
                 }
                 if (quit_game_button.onClick(window, event)) {
@@ -429,9 +401,6 @@ int main() {
         }
         window.clear();
         window.draw(background);
-        /*window.draw(pointA);
-        window.draw(pointB);
-        window.draw(arrow);*/
         if (!game_started) {
             window.draw(new_game_button);
             window.draw(exit_button);
@@ -450,7 +419,7 @@ int main() {
             window.draw(board);
             window.draw(confirm_move_button);
             window.draw(quit_game_button);
-            window.draw(move);
+            window.draw(*move_depiction);
         }
         window.display();
     }
