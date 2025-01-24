@@ -15,7 +15,7 @@ private:
 
 	sf::CircleShape m_circle;
 public:
-	Piece(const float, const Type, const Team);
+	Piece(const float, const Type&, const Team&);
 
 	~Piece();
 
@@ -24,6 +24,8 @@ public:
 	Type getType() const;
 
 	Team getTeam() const;
+
+	void promote();
 
 	void draw(sf::RenderTarget&, sf::RenderStates) const;
 };

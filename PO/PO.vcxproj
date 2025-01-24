@@ -158,7 +158,9 @@
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="Radio.cpp" />
     <ClCompile Include="RoundedRectangle.cpp" />
+    <ClCompile Include="Rules.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="Team.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Turn.cpp" />
   </ItemGroup>
@@ -184,6 +186,7 @@
     <ClInclude Include="Piece.h" />
     <ClInclude Include="Radio.h" />
     <ClInclude Include="RoundedRectangle.h" />
+    <ClInclude Include="Rules.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Team.h" />
     <ClInclude Include="Tile.h" />

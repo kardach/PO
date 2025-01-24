@@ -11,5 +11,6 @@ CornerTile::~CornerTile() {
 }
 
 void CornerTile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    Tile::draw(target, states);
+    states.transform *= getTransform();
+    target.draw(m_rectangle, states);
 }

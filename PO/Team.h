@@ -5,4 +5,6 @@
 
 enum class Team : bool { Black, White };
 
+Team operator!(const Team& other);
+
 #endif // TEAM_H_

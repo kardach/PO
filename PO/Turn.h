@@ -10,7 +10,7 @@ class Turn {
 private:
     Team m_team;
 
-    unsigned m_count;
+    unsigned int m_count;
 public:
     Turn(const Settings&);
 
@@ -18,9 +18,9 @@ public:
 
     void change();
 
-    Team getTeam();
+    Team getTeam() const;
 
-    unsigned int getCount();
+    unsigned int getCount() const;
 };
 
 #endif // TURN_H_

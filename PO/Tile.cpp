@@ -12,8 +12,6 @@ Tile::~Tile() {
 }
 
 void Tile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    states.transform *= getTransform();
-    target.draw(m_rectangle, states);
 }
 
 bool Tile::contains(const sf::Vector2f& cords) {

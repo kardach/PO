@@ -5,8 +5,11 @@
 
 enum class Team : bool;
 class Settings;
-class Tile;
+class CornerTile;
+class BorderTile;
+class MainTile;
 class Piece;
+class Move;
 
 class Board : public sf::Drawable {
 private:
@@ -18,7 +21,11 @@ private:
 
     sf::Vector2f m_offset;
 
-    std::vector<std::shared_ptr<Tile>> m_tiles;
+    std::vector<std::unique_ptr<CornerTile>> m_corners;
+
+    std::vector<std::unique_ptr<BorderTile>> m_borders;
+
+    std::vector<std::unique_ptr<MainTile>> m_tiles;
 
 public:
     Board(const Settings&);
@@ -31,17 +38,27 @@ public:
 
     bool onClick(const sf::RenderWindow&, const sf::Event&);
 
-    sf::Vector2i getTileCords(const sf::Vector2f&);
+    sf::Vector2u getTileCords(const sf::Vector2f&);
 
-    bool hasPiece(const sf::Vector2u&, const Team&);
+    const MainTile* at(const sf::Vector2u&) const;
+
+    void makeMove(std::vector<Move>&);
+
+    void penaltyRemove(std::vector<sf::Vector2u>&);
+
+    //bool hasPiece(const sf::Vector2u&, const Team&) const;
 
     void draw(sf::RenderTarget&, sf::RenderStates) const;
 private:
-    std::vector<std::shared_ptr<Tile>> createBoard(const unsigned int, const sf::Vector2f&, const float);
+    std::vector<std::unique_ptr<CornerTile>> createCorners();
 
-    std::vector<std::unique_ptr<Piece>> createPieces(const unsigned int, const float);
+    std::vector<std::unique_ptr<BorderTile>> createBorders();
 
-    void placePieces(const unsigned int, std::vector<std::shared_ptr<Tile>>, std::vector<std::unique_ptr<Piece>>&);
+    std::vector<std::unique_ptr<MainTile>> createMainTiles();
+
+    std::vector<std::unique_ptr<Piece>> createPieces();
+
+    void placePieces(std::vector<std::unique_ptr<Piece>>);
 };
 
 #endif // BOARD_H_

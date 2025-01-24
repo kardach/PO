@@ -2,7 +2,8 @@
 
 #include "Piece.h"
 
-Piece::Piece(const float radius, const Type type, const Team team) {
+#include <iostream>
+Piece::Piece(const float radius, const Type& type, const Team& team) {
 	m_type = type;
 	m_team = team;
 	m_circle = sf::CircleShape();
@@ -26,7 +27,11 @@ Team Piece::getTeam() const {
 	return m_team;
 }
 
+void Piece::promote() {
+	m_type = King;
+	m_circle.setFillColor(m_circle.getFillColor() == sf::Color::Black ? sf::Color::Blue : sf::Color::Red);
+}
+
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	//states.transform *= getTransform();
 	target.draw(m_circle, states);
 }

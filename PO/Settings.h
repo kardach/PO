@@ -3,8 +3,10 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
+#include <SFML/Graphics.hpp> // ???
+#include "Rules.h"
+
 enum class Team : bool;
-#include <SFML/Graphics.hpp>
 
 class Settings {
 private:
@@ -15,14 +17,8 @@ private:
     unsigned int m_piece_row_count;
     
     Team m_first_move;
-
-    bool m_mandatory_capture;
-
-    bool m_men_move_backwards;
-
-    bool m_men_capture_backwards;
-
-    bool m_kings_fly;
+    
+    Rules m_rules;
 public:
     Settings(const sf::Vector2u&);
 
@@ -42,7 +38,7 @@ public:
 
     void setGameplayRules(const bool, const bool, const bool, const bool);
 
-    const std::array<bool, 4> getGameplayRules();
+    const Rules getGameplayRules() const;
 };
 
 #endif // SETTINGS_H_

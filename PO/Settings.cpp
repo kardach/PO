@@ -3,16 +3,15 @@
 
 #include "Settings.h"
 #include "Team.h"
+#include "Rules.h"
 
 Settings::Settings(const sf::Vector2u& window_dimensions) :
     m_window_dimensions(window_dimensions),
     m_board_size(0),
     m_piece_row_count(0),
     m_first_move(Team::Black),
-    m_mandatory_capture(false),
-    m_men_move_backwards(false),
-    m_men_capture_backwards(false),
-    m_kings_fly(false) {
+    m_rules()
+    {
 }
 
 const sf::Vector2u Settings::getWindowDimensions() const {
@@ -44,12 +43,9 @@ const Team Settings::getFirstMove() const {
 }
 
 void Settings::setGameplayRules(const bool mandatory_capture, const bool men_move_backwards, const bool men_capture_backwards, const bool kings_fly) {
-    m_mandatory_capture = mandatory_capture;
-    m_men_move_backwards = men_move_backwards;
-    m_men_capture_backwards = men_capture_backwards;
-    m_kings_fly = kings_fly;
+    m_rules = Rules(mandatory_capture, men_move_backwards, men_capture_backwards, kings_fly);
 }
 
-const std::array<bool, 4> Settings::getGameplayRules() {
-    return std::array<bool, 4>{ m_mandatory_capture, m_men_move_backwards, m_men_capture_backwards, m_kings_fly };
+const Rules Settings::getGameplayRules() const {
+    return m_rules;
 }
