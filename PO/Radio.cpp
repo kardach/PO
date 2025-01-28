@@ -6,6 +6,7 @@
 Radio::Radio()
     : m_selected(m_names.size()) {
     m_position = sf::Vector2f();
+    m_flag = false;
 }
 
 Radio::~Radio() {
@@ -57,7 +58,11 @@ const std::vector<std::string> Radio::getNames() const {
     return m_names;
 }
 
-const std::string Radio::selected() { // UNSELECTED ERROR
+bool Radio::isSelected() {
+    return m_flag;
+}
+
+const std::string Radio::selected() { 
     return m_names[m_selected];
 }
 
@@ -66,6 +71,7 @@ void Radio::unselect() {
         m_options[m_names[m_selected]]->uncheck();
         m_selected = m_names.size();
     }
+    m_flag = false;
 }
 
 void Radio::enable(const std::string& name) {
@@ -92,6 +98,7 @@ bool Radio::onClick(const sf::RenderWindow& window, const sf::Event& event) {
                     if (m_selected != m_names.size()) {
                         m_options[m_names[m_selected]]->uncheck();
                     }
+                    m_flag = true;
                     m_selected = std::distance(m_names.begin(), std::find(m_names.begin(), m_names.end(), name));
                 }
                 return true;
@@ -99,6 +106,7 @@ bool Radio::onClick(const sf::RenderWindow& window, const sf::Event& event) {
             else {
                 if (name == m_names[m_selected]) {
                     m_selected = m_names.size();
+                    m_flag = false;
                 }
             }
         }

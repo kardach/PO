@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp> // ???
 #include "Rules.h"
+#include "Gamemode.h"
 
 enum class Team : bool;
 
@@ -19,6 +20,8 @@ private:
     Team m_first_move;
     
     Rules m_rules;
+    
+    Gamemode m_gamemode;
 public:
     Settings(const sf::Vector2u&);
 
@@ -39,6 +42,10 @@ public:
     void setGameplayRules(const bool, const bool, const bool, const bool);
 
     const Rules getGameplayRules() const;
+
+    void setGamemode(const Gamemode&);
+
+    const Gamemode getGamemode();
 };
 
 #endif // SETTINGS_H_

@@ -14,6 +14,10 @@ private:
 	Team m_team;
 
 	sf::CircleShape m_circle;
+
+	sf::Texture m_texture;
+
+	sf::Sprite m_sprite;
 public:
 	Piece(const float, const Type&, const Team&);
 

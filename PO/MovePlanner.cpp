@@ -58,7 +58,7 @@ MovePlanner::MovePlanner(const Settings& settings, const Turn& turn, const Board
         m_man_can_capture = [=](const sf::Vector2u& from, const sf::Vector2u& to) {
             sf::Vector2i delta(to - from);
             Team turn = m_turn->getTeam();
-            if (turn == Team::Black && delta.y == 2 || turn == Team::White && delta.y == -2 &&
+            if ((turn == Team::Black && delta.y == 2 || turn == Team::White && delta.y == -2) &&
                 std::abs(delta.x) == 2 ) {
                 sf::Vector2u jumped_over(sf::Vector2f(from + to) * 0.5f);
                 const MainTile* tile = m_board->at(jumped_over);

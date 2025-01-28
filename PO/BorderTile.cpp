@@ -8,7 +8,7 @@ BorderTile::BorderTile(const float size, const sf::Vector2f& position, const cha
     m_font = sf::Font();
     m_font.loadFromFile("ariblk.ttf");
 
-    std::string text = { '|', sign, '|' };
+    std::string text = {sign};
 
     m_text = sf::Text();
     m_text.setFont(m_font);

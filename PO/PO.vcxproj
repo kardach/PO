@@ -178,6 +178,7 @@
     <ClInclude Include="Checkable.h" />
     <ClInclude Include="Checkbox.h" />
     <ClInclude Include="CornerTile.h" />
+    <ClInclude Include="Gamemode.h" />
     <ClInclude Include="MainTile.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="MoveDepiction.h" />
@@ -191,6 +192,10 @@
     <ClInclude Include="Team.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Turn.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\king.png" />
+    <Image Include="..\..\..\..\Desktop\man.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

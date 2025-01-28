@@ -25,7 +25,7 @@ Board::Board(const Settings& settings) {
 
     m_tile_size = ((window_heigth < window_width) ? window_heigth : window_width) / m_size;
 
-    float x_offset = (window_heigth < window_width) ? (window_width - m_size * m_tile_size) / 2 : 0;
+    float x_offset = (window_heigth < window_width) ? (window_width - m_size * m_tile_size) : 0;
     float y_offset = (window_heigth < window_width) ? 0 : (window_width - m_size * m_tile_size) / 2;
     m_offset = sf::Vector2f(x_offset, y_offset);
 
@@ -86,6 +86,7 @@ void Board::makeMove(std::vector<Move>& move) {
             }
         }
     }
+    //std::cout << "SIZE=" << move.size() << std::endl;
     from = move.at(0).from();
     to = move.at(move.size() - 1).to();
     std::unique_ptr<Piece> temp = m_tiles.at((from.x - 1) * (m_size - 2) + (from.y - 1))->removePiece();

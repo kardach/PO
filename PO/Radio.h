@@ -9,6 +9,8 @@ private:
 
     sf::Vector2f m_position;
 
+    bool m_flag;
+
     std::size_t m_selected;
 
     std::vector<std::string> m_names;
@@ -19,7 +21,7 @@ public:
 
     ~Radio();
 
-    void addOption(const std::string&, const std::string&);  // CAN ADD SAME TWICE
+    void addOption(const std::string&, const std::string&);
 
     const std::size_t getOptionCount() const;
 
@@ -31,7 +33,9 @@ public:
 
     const sf::Vector2f getSize() const;
 
-    const std::string selected(); // UNSELECTED ERROR
+    bool isSelected();
+
+    const std::string selected();
 
     void unselect();
 

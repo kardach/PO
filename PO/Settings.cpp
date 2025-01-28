@@ -49,3 +49,11 @@ void Settings::setGameplayRules(const bool mandatory_capture, const bool men_mov
 const Rules Settings::getGameplayRules() const {
     return m_rules;
 }
+
+void Settings::setGamemode(const Gamemode& gamemode) {
+    m_gamemode = gamemode;
+}
+
+const Gamemode Settings::getGamemode() {
+    return m_gamemode;
+}
